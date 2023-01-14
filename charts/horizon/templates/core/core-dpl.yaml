@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "horizon.core" . }}
+  labels:
+{{ include "horizon.labels" . | indent 4 }}
+    component: core
+spec:
+  replicas: {{ .Values.core.replicas }}
+{{- if .Values.core.strategy }}
+  strategy:
+{{ toYaml .Values.core.strategy | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "horizon.matchLabels" . | indent 6 }}
+      component: core
+  template:
+    metadata:
+      labels:
+{{ include "horizon.matchLabels" . | indent 8 }}
+        component: core
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-cm.yaml") . | sha256sum }}
+        {{- if .Values.core.podAnnotations }}
+{{ toYaml .Values.core.podAnnotations | indent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.core.podExtra }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.core.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.core.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.core.serviceAccount.create }}
+      serviceAccountName: {{ template "horizon.core" . }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: core
+        image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args:
+        - --config=/home/appops/config
+        - --roles=/home/appops/roles
+        - --environment=production
+        - --scopes=/home/appops/scopes
+        - --loglevel={{ default "info" .Values.core.args.loglevel }}
+        - --gitOpsRepoDefaultBranch={{ .Values.core.args.gitOpsRepoDefaultBranch }}
+        - --buildjsonschema=/home/appops/buildjsonschema
+        - --builduischema=/home/appops/builduischema
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        {{- range $key, $value := .Values.core.envs }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.config.serverConfig.port }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.config.serverConfig.port }}
+          timeoutSeconds: 2
+          periodSeconds: 10
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.config.serverConfig.port }}
+          timeoutSeconds: 2
+          periodSeconds: 10
+          failureThreshold: 20
+        {{- if .Values.core.resources }}
+        resources: {{ toYaml .Values.core.resources | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+          - name: config
+            mountPath: /home/appops/config
+            subPath: config
+            readOnly: true
+          - name: roles
+            mountPath: /home/appops/roles
+            subPath: roles
+            readOnly: true
+          - name: scopes
+            mountPath: /home/appops/scopes
+            subPath: scopes
+            readOnly: true
+          - name: authhtml
+            mountPath: /home/appops/authhtml
+            subPath: authhtml
+            readOnly: true
+          - mountPath: /home/appops/buildjsonschema
+            name: buildschema
+            readOnly: true
+            subPath: build-json-schema.json
+          - mountPath: /home/appops/builduischema
+            name: buildschema
+            readOnly: true
+            subPath: build-ui-schema.json
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "horizon.config" . }}
+          items:
+          - key: config
+            path: config
+      - name: roles
+        configMap:
+          name : {{ template  "horizon.roles" . }}
+          items:
+          - key: roles
+            path: roles
+      - name: scopes
+        configMap:
+          name: {{ template  "horizon.scopes" . }}
+          items:
+            - key: scopes
+              path: scopes
+      - name: authhtml
+        configMap:
+          name: {{ template  "horizon.authhtml" . }}
+          items:
+            - key: authhtml
+              path: authhtml
+      - name: buildschema
+        configMap:
+          name: {{ template  "horizon.build_schema" . }}
+          items:
+            - key: build-json-schema.json
+              path: build-json-schema.json
+            - key: build-ui-schema.json
+              path: build-ui-schema.json
+      {{- with .Values.core.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.core.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.core.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.core.priorityClassName }}
+      priorityClassName: {{ .Values.core.priorityClassName }}
+      {{- end }}

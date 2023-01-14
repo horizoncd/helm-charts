@@ -1,0 +1,17 @@
+{{- if .Values.tektonDashboard.ingress.host }}
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: tekton-dashboard
+  namespace: {{ .Release.Namespace }}
+spec:
+  rules:
+    - host: {{ .Values.tektonDashboard.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              serviceName: tekton-dashboard
+              servicePort: 9097
+{{- end }}

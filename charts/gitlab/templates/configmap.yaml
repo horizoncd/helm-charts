@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+data:
+  GITLAB_HOST: {{  required "GITLAB_HOST is required" .Values.config.GITLAB_HOST | quote }}
+  GITLAB_PORT: {{ .Values.config.GITLAB_PORT | quote }}
+  GITLAB_ROOT_EMAIL: {{ required "GITLAB_ROOT_EMAIL is required" .Values.config.GITLAB_ROOT_EMAIL | quote }}
+  {{ if .Values.config.GITLAB_TIMEZONE -}}
+  GITLAB_TIMEZONE: {{ .Values.config.GITLAB_TIMEZONE | quote }}
+  {{- end }}
+  init.sh: |
+      while true
+      do
+        CHECK_STATUS="$(curl -s -o /dev/null -w "%{http_code}" http://localhost/help)"
+        [[ "$CHECK_STATUS" == 20* ]] && {
+          gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Automation token'); token.set_token('{{ .Values.config.GITLAB_ROOT_ACCESS_TOKEN }}'); token.save!"
+          exit 0
+        }
+        sleep 10
+      done
