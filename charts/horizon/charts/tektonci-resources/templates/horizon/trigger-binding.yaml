@@ -1,0 +1,46 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: horizon-taskbinding
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+spec:
+  params:
+    - name: token
+      value: $(body.token)
+    - name: application
+      value: $(body.application)
+    - name: applicationID
+      value: $(body.applicationID)
+    - name: cluster
+      value: $(body.cluster)
+    - name: clusterID
+      value: $(body.clusterID)
+    - name: region
+      value: $(body.region)
+    - name: regionID
+      value: $(body.regionID)
+    - name: environment
+      value: $(body.environment)
+    - name: gitRepositoryUrl
+      value: $(body.git.url)
+    - name: gitSubfolder
+      value: $(body.git.subfolder)
+    - name: gitCommit
+      value: $(body.git.commit)
+    - name: gitBranch
+      value: $(body.git.branch)
+    - name: gitTag
+      value: $(body.git.tag)
+    - name: pipelineJSONBlob
+      value: $(extensions.pipelineJSONBlob)
+    - name: pipelinerunID
+      value: $(body.pipelinerunID)
+    - name: imageURL
+      value: $(body.imageURL)
+    - name: operator
+      value: $(body.operator)
+    - name: requestID
+      value: $(header.X-Request-Id)
+    - name: template
+      value: $(body.template)

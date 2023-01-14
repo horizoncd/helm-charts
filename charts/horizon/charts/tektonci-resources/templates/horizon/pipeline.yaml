@@ -1,0 +1,95 @@
+# default pipeline
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: horizon-pipeline
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+spec:
+  params:
+    - name: token
+    - name: application
+    - name: cluster
+    - name: clusterID
+    - name: environment
+    - name: gitRepositoryUrl
+    - name: gitSubfolder
+    - name: gitCommit
+    - name: gitBranch
+    - name: gitTag
+    - name: pipelineJSONBlob
+    - name: imageURL
+    - name: pipelinerunID
+    - name: requestID
+  workspaces:
+    - name: buildinfo
+  tasks:
+    - name: build
+      taskRef:
+        name: horizon-build
+      params:
+        - name: token
+          value: $(params.token)
+        - name: application
+          value: $(params.application)
+        - name: cluster
+          value: $(params.cluster)
+        - name: clusterID
+          value: $(params.clusterID)
+        - name: environment
+          value: $(params.environment)
+        - name: gitRepositoryUrl
+          value: $(params.gitRepositoryUrl)
+        - name: gitSubfolder
+          value: $(params.gitSubfolder)
+        - name: gitCommit
+          value: $(params.gitCommit)
+        - name: gitBranch
+          value: $(params.gitBranch)
+        - name: gitTag
+          value: $(params.gitTag)
+        - name: pipelineJSONBlob
+          value: $(params.pipelineJSONBlob)
+        - name: imageURL
+          value: $(params.imageURL)
+        - name: pipelinerunID
+          value: $(params.pipelinerunID)
+        - name: requestID
+          value: $(params.requestID)
+      workspaces:
+        - name: buildinfo
+          workspace: buildinfo
+    - name: deploy
+      taskRef:
+        name: horizon-deploy
+      runAfter:
+        - build
+      params:
+        - name: token
+          value: $(params.token)
+        - name: application
+          value: $(params.application)
+        - name: cluster
+          value: $(params.cluster)
+        - name: clusterID
+          value: $(params.clusterID)
+        - name: environment
+          value: $(params.environment)
+        - name: gitRepositoryUrl
+          value: $(params.gitRepositoryUrl)
+        - name: gitSubfolder
+          value: $(params.gitSubfolder)
+        - name: gitCommit
+          value: $(params.gitCommit)
+        - name: gitBranch
+          value: $(params.gitBranch)
+        - name: gitTag
+          value: $(params.gitTag)
+        - name: pipelineJSONBlob
+          value: $(params.pipelineJSONBlob)
+        - name: imageURL
+          value: $(params.imageURL)
+        - name: pipelinerunID
+          value: $(params.pipelinerunID)
+        - name: requestID
+          value: $(params.requestID)

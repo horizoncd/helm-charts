@@ -1,0 +1,40 @@
+# deploy task
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: horizon-deploy
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+spec:
+  params:
+    - name: token
+    - name: application
+    - name: cluster
+    - name: clusterID
+    - name: environment
+    - name: gitRepositoryUrl
+    - name: gitSubfolder
+    - name: gitCommit
+    - name: gitBranch
+    - name: gitTag
+    - name: pipelineJSONBlob
+    - name: imageURL
+    - name: pipelinerunID
+    - name: requestID
+  steps:
+    - name: deploy
+      image: {{ .Values.horizon.deployTask.image.deployStep }}
+      {{- with .Values.horizon.deployTask.timeout.deployStep }}
+      timeout: {{.}}
+      {{- end}}
+      env:
+        - name: HORIZON_API_URL
+          value: {{ .Values.horizon.deployTask.horizonApiUrl }}
+        - name: CURL_CONNECT_TIME
+          value: "{{ .Values.horizon.deployTask.curlDeploy.connectTime }}"
+        - name: CURL_MAX_TIME
+          value: "{{ .Values.horizon.deployTask.curlDeploy.maxTime }}"
+        - name: CURL_RETRY
+          value: "{{ .Values.horizon.deployTask.curlDeploy.retry }}"
+      script:
+      {{ toYaml .Values.horizon.script.deploy | nindent 8 }}
