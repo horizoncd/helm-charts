@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: {{ template "fullname" . }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - bash
+              - /tmp/init.sh
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        env:
+        - name: GITLAB_OMNIBUS_CONFIG
+          value: |
+            external_url 'http://{{ .Values.config.GITLAB_HOST }}'
+            
+            # Smtp
+            gitlab_rails['smtp_enable'] = false
+            gitlab_rails['gitlab_email_enabled'] = false
+            gitlab_rails['incoming_email_enabled'] = false
+
+            # Terraform
+            gitlab_rails['terraform_state_enabled'] = false
+
+            # Usage Statistics
+            gitlab_rails['usage_ping_enabled'] = false
+            gitlab_rails['sentry_enabled'] = false
+            grafana['reporting_enabled'] = false
+
+            # Registry
+            gitlab_rails['gitlab_default_projects_features_container_registry'] = false
+            gitlab_rails['registry_enabled'] = false
+            registry['enable'] = false
+            registry_nginx['enable'] = false
+
+            # Package
+            gitlab_rails['packages_enabled'] = false
+            gitlab_rails['dependency_proxy_enabled'] = false
+
+            # GitLab KAS
+            gitlab_kas['enable'] = false
+            gitlab_rails['gitlab_kas_enabled'] = false
+
+            # Mattermost
+            mattermost['enable'] = false
+            mattermost_nginx['enable'] = false
+
+            # Kerberos
+            gitlab_rails['kerberos_enabled'] = false
+            sentinel['enable'] = false
+
+            # GitLab Pages
+            gitlab_pages['enable'] = false
+            pages_nginx['enable'] = false
+
+            # PUMA
+            puma['worker_processes'] = 0
+            puma['min_threads'] = 1
+            puma['max_threads'] = 2
+
+            # Concurrency
+            sidekiq['max_concurrency'] = 5
+
+            gitlab_ci['gitlab_ci_all_broken_builds'] = false
+            gitlab_ci['gitlab_ci_add_pusher'] = false
+
+            # Monitor
+            prometheus_monitoring['enable'] = false
+            alertmanager['enable'] = false
+            node_exporter['enable'] = false
+            redis_exporter['enable'] = false
+            postgres_exporter['enable'] = false
+            pgbouncer_exporter['enable'] = false
+            gitlab_exporter['enable'] = false
+            grafana['enable'] = false
+            sidekiq['metrics_enabled'] = false
+        {{- if .Values.config.GITLAB_TIMEZONE }}
+        - name: GITLAB_TIMEZONE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "fullname" . }}
+              key: GITLAB_TIMEZONE
+        {{- end }}
+        - name: DB_ENCODING
+          value: utf8
+        - name: GITLAB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: GITLAB_ROOT_PASSWORD
+        - name: GITLAB_ROOT_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "fullname" . }}
+              key: GITLAB_ROOT_EMAIL
+        - name: GITLAB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "fullname" . }}
+              key: GITLAB_HOST
+        - name: GITLAB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "fullname" . }}
+              key: GITLAB_PORT
+        ports:
+        - name: http
+          containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /help
+            port: 80
+          initialDelaySeconds: 180
+          timeoutSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /help
+            port: 80
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        volumeMounts:
+        - name: gitlab-data
+          mountPath: /var/opt/gitlab
+        - name: init
+          mountPath: /tmp/init.sh
+          subPath: init.sh
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: gitlab-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-data
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: init
+        configMap:
+          name: {{ template "fullname" . }}

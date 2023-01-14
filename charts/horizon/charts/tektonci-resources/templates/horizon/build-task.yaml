@@ -1,0 +1,64 @@
+# build task
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: horizon-build
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+spec:
+  params:
+    - name: token
+    - name: application
+    - name: cluster
+    - name: clusterID
+    - name: environment
+    - name: gitRepositoryUrl
+    - name: gitSubfolder
+    - name: gitCommit
+    - name: gitBranch
+    - name: gitTag
+    - name: pipelineJSONBlob
+    - name: imageURL
+    - name: pipelinerunID
+    - name: requestID
+  workspaces:
+    - name: buildinfo
+  results:
+    - name: properties
+  steps:
+    - name: git
+      workingDir: /workspace
+      image: {{ .Values.horizon.buildTask.image.gitStep }}
+      {{- with .Values.horizon.buildTask.timeout.gitStep }}
+      timeout: {{.}}
+      {{- end}}
+      script:
+      {{ toYaml .Values.horizon.script.git | nindent 8 }}
+      volumeMounts:
+        - name: git-token
+          mountPath: /workspace/git-token
+    - name: compile
+      workingDir: /workspace/git-source
+      {{- with .Values.horizon.buildTask.timeout.compileStep }}
+      timeout: {{.}}
+      {{- end}}
+      image: {{ .Values.horizon.buildTask.image.compileStep }}
+      env:
+        - name: "TZ"
+          value: Asia/Shanghai
+      script:
+      {{ toYaml .Values.horizon.script.compile | nindent 8 }}
+    - name: image
+      image: {{ .Values.horizon.buildTask.image.imageStep }}
+      {{- with .Values.horizon.buildTask.timeout.imageStep }}
+      timeout: {{.}}
+      {{- end}}
+      env:
+        - name: DOCKER_CONFIG
+          value: /tekton/home/.docker/
+      script:
+      {{ toYaml .Values.horizon.script.image | nindent 8 }}
+  volumes:
+    - name: git-token
+      secret:
+        secretName: git-token
