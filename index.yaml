@@ -18,6 +18,50 @@ entries:
     urls:
     - https://github.com/horizoncd/helm-charts/releases/download/gitlab-2.0.1/gitlab-2.0.1.tgz
     version: 2.0.1
+  horizon:
+  - apiVersion: v2
+    appVersion: v2.0.1
+    created: "2023-01-14T14:10:37.506635516Z"
+    dependencies:
+    - condition: gitlab.enabled
+      name: gitlab
+      repository: https://horizoncd.github.io/helm-charts
+      version: 2.0.1
+    - condition: tektoncd.enabled
+      name: tektoncd
+      repository: https://horizoncd.github.io/helm-charts
+      version: 2.0.1
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.10.13
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.4.1
+    - condition: chartmuseum.enabled
+      name: chartmuseum
+      repository: https://chartmuseum.github.io/charts
+      version: 3.9.1
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 6.26.5
+    - condition: argo-cd.enabled
+      name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: 5.0.0
+    - condition: harbor.enabled
+      name: harbor
+      repository: https://helm.goharbor.io
+      version: 1.6.3
+    description: A CICD DevOps Platform
+    digest: c237c789485db33aafaa71e983fe65dc4fe82f0e646e8851f46d666532e2f399
+    name: horizon
+    type: application
+    urls:
+    - https://github.com/horizoncd/helm-charts/releases/download/horizon-2.0.1/horizon-2.0.1.tgz
+    version: 2.0.1
   tektoncd:
   - apiVersion: v2
     appVersion: 0.18.1
@@ -29,4 +73,4 @@ entries:
     urls:
     - https://github.com/horizoncd/helm-charts/releases/download/tektoncd-2.0.1/tektoncd-2.0.1.tgz
     version: 2.0.1
-generated: "2023-01-14T13:11:22.61805427Z"
+generated: "2023-01-14T14:10:37.506645716Z"
