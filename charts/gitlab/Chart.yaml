@@ -1,0 +1,13 @@
+name: gitlab
+apiVersion: v2
+version: 2.0.1
+appVersion: 15.5.1
+description: GitLab Community Edition
+keywords:
+- git
+- ci
+- deploy
+- issue tracker
+- code review
+- wiki
+home: https://about.gitlab.com

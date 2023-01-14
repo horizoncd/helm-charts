@@ -1,0 +1,15 @@
+{{- if .Values.core.grafanaDashboards }}
+apiVersion: v1
+kind: ConfigMapList
+items:
+{{- range .Values.core.grafanaDashboards }}
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: {{ printf "%s-%s" "grafana-dashboard" .name | trunc 63 | trimSuffix "-" }}
+    labels:
+      {{ $.Values.config.grafanaConfig.dashboards.labelKey }}: {{ $.Values.config.grafanaConfig.dashboards.labelValue | quote }}
+  data:
+    {{ .name }}.json: {{ toYaml .value | indent 4 }}
+{{- end }}
+{{- end }}

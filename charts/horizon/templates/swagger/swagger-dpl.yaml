@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "horizon.swagger" . }}
+  labels:
+{{ include "horizon.labels" . | indent 4 }}
+    component: swagger
+spec:
+  replicas: {{ .Values.swagger.replicas }}
+  selector:
+    matchLabels:
+{{ include "horizon.matchLabels" . | indent 6 }}
+      component: swagger
+  template:
+    metadata:
+      labels:
+{{ include "horizon.matchLabels" . | indent 8 }}
+        component: swagger
+    spec:
+      {{- with .Values.swagger.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: swagger
+        image: {{ .Values.swagger.image.repository }}:{{ .Values.swagger.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        {{- range $key, $value := .Values.swagger.envs }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.swagger.service.targetPort }}
+        {{- if .Values.swagger.resources }}
+        resources: {{ toYaml .Values.swagger.resources | nindent 10 }}
+        {{- end }}
