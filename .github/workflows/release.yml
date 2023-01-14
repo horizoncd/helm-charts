@@ -30,7 +30,6 @@ jobs:
         run: |
           helm repo add grafana https://grafana.github.io/helm-charts
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm repo add horizoncd https://horizoncd.github.io/helm-charts
           helm repo add chartmuseum https://chartmuseum.github.io/charts
           helm repo add argo-cd https://argoproj.github.io/argo-helm
           helm repo add harbor https://helm.goharbor.io
