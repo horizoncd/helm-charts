@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "horizon.job" . }}
+  labels:
+{{ include "horizon.labels" . | indent 4 }}
+    component: job
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+{{ include "horizon.matchLabels" . | indent 6 }}
+      component: job
+  template:
+    metadata:
+      labels:
+{{ include "horizon.matchLabels" . | indent 8 }}
+        component: job
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-cm.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.job.serviceAccount.create }}
+      serviceAccountName: {{ template "horizon.job" . }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: job
+        image: {{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args:
+        - --config=/home/appops/config
+        - --environment=production
+        - --loglevel={{ default "info" .Values.job.args.loglevel }}
+        - --gitOpsRepoDefaultBranch={{ .Values.core.args.gitOpsRepoDefaultBranch }}
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        {{- range $key, $value := .Values.job.envs }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.config.serverConfig.port }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.config.serverConfig.port }}
+          timeoutSeconds: 2
+          periodSeconds: 10
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.config.serverConfig.port }}
+          timeoutSeconds: 2
+          periodSeconds: 10
+          failureThreshold: 20
+        {{- if .Values.job.resources }}
+        resources: {{ toYaml .Values.job.resources | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+          - name: config
+            mountPath: /home/appops/config
+            subPath: config
+            readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "horizon.config" . }}
+          items:
+          - key: config
+            path: config
+      {{- with .Values.job.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.job.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.job.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.job.priorityClassName }}
+      priorityClassName: {{ .Values.job.priorityClassName }}
+      {{- end }}

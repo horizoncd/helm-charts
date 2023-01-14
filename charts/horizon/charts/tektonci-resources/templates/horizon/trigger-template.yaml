@@ -1,0 +1,92 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: horizon-triggertemplate
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
+spec:
+  params:
+    - name: token
+      description: access token used to callback horizon-core
+    - name: operator
+      description: the operator of this pipelineRun
+    - name: application
+      description: application name
+    - name: applicationID
+      description: application id
+    - name: region
+      description: region name
+    - name: regionID
+      description: region id
+    - name: cluster
+      description: cluster name
+    - name: clusterID
+      description: cluster id
+    - name: environment
+      description: environment
+    - name: gitRepositoryUrl
+      description: git repository url
+    - name: gitSubfolder
+      description: git subfolder
+    - name: gitCommit
+      description: git commit
+    - name: gitBranch
+      description: git branch
+    - name: gitTag
+      description: git tag
+    - name: pipelineJSONBlob
+      description: pipelineJSONBlob
+    - name: imageURL
+      description: docker image url
+    - name: pipelinerunID
+      description: pipelinerun id
+    - name: requestID
+      description: requestID of this operation
+    - name: template
+      description: template of the application
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        name: $(tt.params.cluster)-$(tt.params.pipelinerunID)
+        annotations:
+          "helm.sh/hook": "post-install,post-upgrade"
+      spec:
+        pipelineRef:
+          name: horizon-pipeline
+        {{- with .Values.horizon.pipelineRun.podTemplate }}
+        podTemplate: {{ toYaml . | nindent 10 }}
+        {{- end }}
+        params:
+          - name: token
+            value: $(tt.params.token)
+          - name: application
+            value: $(tt.params.application)
+          - name: cluster
+            value: $(tt.params.cluster)
+          - name: clusterID
+            value: $(tt.params.clusterID)
+          - name: environment
+            value: $(tt.params.environment)
+          - name: gitRepositoryUrl
+            value: $(tt.params.gitRepositoryUrl)
+          - name: gitSubfolder
+            value: $(tt.params.gitSubfolder)
+          - name: gitCommit
+            value: $(tt.params.gitCommit)
+          - name: gitBranch
+            value: $(tt.params.gitBranch)
+          - name: gitTag
+            value: $(tt.params.gitTag)
+          - name: pipelineJSONBlob
+            value: $(tt.params.pipelineJSONBlob)
+          - name: imageURL
+            value: $(tt.params.imageURL)
+          - name: pipelinerunID
+            value: $(tt.params.pipelinerunID)
+          - name: requestID
+            value: $(tt.params.requestID)
+        workspaces:
+          - name: buildinfo
+            emptyDir: {}
+        serviceAccountName: pipeline-sa
