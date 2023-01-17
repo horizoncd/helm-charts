@@ -273,7 +273,7 @@ horizon:
         CONTENT_TYPE="application/json"
         ARGS=("${ARGS[@]}" "-X" "$METHOD")
         ARGS=("${ARGS[@]}" "-H" "'Content-Type: $CONTENT_TYPE'" \
-                            "-H" "'X-Horizon-Jwt-Token: $TOKEN'" \
+                            "-H" "'X-Horizon-JWT-Token: $TOKEN'" \
                             "-H" "'X-Request-Id: $REQUEST_ID'" )
         CMD="curl -k -sSL "${ARGS[@]}" \
                     "$([[ ! -z "$OUTPUT" ]] && echo "-o $OUTPUT")" '$URL'"
@@ -316,3 +316,4 @@ auth:
 gitRepos: []
 eventListener:
   replicas: 1
+extraVolumeMounts: []

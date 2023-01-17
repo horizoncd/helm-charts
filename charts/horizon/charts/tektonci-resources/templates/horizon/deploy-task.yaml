@@ -38,3 +38,11 @@ spec:
           value: "{{ .Values.horizon.deployTask.curlDeploy.retry }}"
       script:
       {{ toYaml .Values.horizon.script.deploy | nindent 8 }}
+      {{ if .Values.extraVolumeMounts -}}
+      volumeMounts:
+{{- include "tektonci.extraVolumeMounts" . | indent 8 }}
+      {{- end }}
+  {{ if .Values.extraVolumeMounts -}}
+  volumes:
+{{- include "tektonci.extraVolumes" . | indent 4 }}
+  {{- end }}

@@ -37,6 +37,7 @@ spec:
       volumeMounts:
         - name: git-token
           mountPath: /workspace/git-token
+{{- include "tektonci.extraVolumeMounts" . | indent 8 }}
     - name: compile
       workingDir: /workspace/git-source
       {{- with .Values.horizon.buildTask.timeout.compileStep }}
@@ -48,6 +49,10 @@ spec:
           value: Asia/Shanghai
       script:
       {{ toYaml .Values.horizon.script.compile | nindent 8 }}
+      {{ if .Values.extraVolumeMounts -}}
+      volumeMounts:
+{{- include "tektonci.extraVolumeMounts" . | indent 8 }}
+      {{- end }}
     - name: image
       image: {{ .Values.horizon.buildTask.image.imageStep }}
       {{- with .Values.horizon.buildTask.timeout.imageStep }}
@@ -58,7 +63,12 @@ spec:
           value: /tekton/home/.docker/
       script:
       {{ toYaml .Values.horizon.script.image | nindent 8 }}
+      {{ if .Values.extraVolumeMounts -}}
+      volumeMounts:
+{{- include "tektonci.extraVolumeMounts" . | indent 8 }}
+      {{- end }}
   volumes:
     - name: git-token
       secret:
         secretName: git-token
+{{- include "tektonci.extraVolumes" . | indent 4 }}
