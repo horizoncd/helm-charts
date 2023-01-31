@@ -37,7 +37,7 @@ spec:
         - name: CURL_RETRY
           value: "{{ .Values.horizon.deployTask.curlDeploy.retry }}"
       script:
-      {{ toYaml .Values.horizon.script.deploy | nindent 8 }}
+      {{ toYaml (tpl .Values.horizon.script.deploy .) | nindent 8 }}
       {{ if .Values.extraVolumeMounts -}}
       volumeMounts:
 {{- include "tektonci.extraVolumeMounts" . | indent 8 }}
