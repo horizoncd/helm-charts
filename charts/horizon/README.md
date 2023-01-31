@@ -441,7 +441,11 @@ tektonci-resources:
       horizonApiUrl: http://horizon-core
   auth:
     dockerConfigJson: {    "auths":    {        "harbor.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
-  gitRepos: []
+  gitRepos:
+    ssh:
+      url: ""
+      privateKey: ""
+    http: []
   extraVolumeMounts: []
 ```
 

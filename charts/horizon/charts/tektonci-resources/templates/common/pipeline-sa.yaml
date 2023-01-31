@@ -1,8 +1,9 @@
-# sa to run the pipeline, includes git-token and harbor-secret
+# sa to run the pipeline, includes git-secret, git-token and harbor-secret
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: pipeline-sa
 secrets:
+  - name: git-secret
   - name: git-token
   - name: harbor-secret

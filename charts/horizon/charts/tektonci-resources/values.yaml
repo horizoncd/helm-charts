@@ -31,6 +31,14 @@ horizon:
       export GIT_REPOSITORY_URL="$(params.gitRepositoryUrl)"
       export GIT_COMMIT="$(params.gitCommit)"
       export GIT_PULL_URL=""
+
+      # config git ssh
+      rm -rf /root/.ssh && ln -s /tekton/home/.ssh /root
+      echo -e 'StrictHostKeyChecking no' > /root/.ssh/config
+      GIT_PRIVATE_KEY="$(ls /root/.ssh | grep id_)"
+      git config --global core.sshCommand "ssh -i /root/.ssh/$GIT_PRIVATE_KEY"
+
+      # check https url and match token
       retrieve_pull_url() {
         cd "$GIT_TOKENS_DIR"
         URLs=$(yq '.[].url' git-tokens)
@@ -48,6 +56,8 @@ horizon:
         done
       } && retrieve_pull_url
       [[ -z "$GIT_PULL_URL" ]] && GIT_PULL_URL="$GIT_REPOSITORY_URL"
+
+      # pull code
       git clone "$GIT_PULL_URL" "$SOURCE_DIR" && {
         cd "$SOURCE_DIR"
         git checkout "$GIT_COMMIT"
@@ -313,7 +323,11 @@ horizon:
       deploy
 auth:
   dockerConfigJson: "{}"
-gitRepos: []
+gitRepos:
+  ssh:
+    url: ""
+    privateKey: ""
+  http: []
 eventListener:
   replicas: 1
 extraVolumeMounts: []

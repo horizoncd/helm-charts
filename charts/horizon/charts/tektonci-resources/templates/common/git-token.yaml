@@ -1,0 +1,9 @@
+# tokens for git repo
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-token
+type: Opaque
+stringData:
+  git-tokens: |
+{{ toYaml .Values.gitRepos.http | indent 4 }}
