@@ -4,6 +4,8 @@ kind: ServiceAccount
 metadata:
   name: pipeline-sa
 secrets:
-  - name: git-secret
+  {{- range $i, $v := .Values.gitRepos.ssh }}
+  - name: git-secret{{ $i }}
+  {{- end }}
   - name: git-token
   - name: harbor-secret

@@ -17,7 +17,7 @@ horizon:
       connectTime: 5
       maxTime: 10
       retry: 2
-    horizonApiUrl: http://horizon-backend-core.horizon:80
+    horizonApiUrl: http://horizon-core.horizoncd.svc.cluster.local
   pipelineRun:
     podTemplate: {}
   ingress:
@@ -34,9 +34,7 @@ horizon:
 
       # config git ssh
       rm -rf /root/.ssh && ln -s /tekton/home/.ssh /root
-      echo -e 'StrictHostKeyChecking no' > /root/.ssh/config
-      GIT_PRIVATE_KEY="$(ls /root/.ssh | grep id_)"
-      git config --global core.sshCommand "ssh -i /root/.ssh/$GIT_PRIVATE_KEY"
+      echo -e 'StrictHostKeyChecking no' >> /root/.ssh/config
 
       # check https url and match token
       retrieve_pull_url() {
@@ -324,9 +322,7 @@ horizon:
 auth:
   dockerConfigJson: "{}"
 gitRepos:
-  ssh:
-    url: ""
-    privateKey: ""
+  ssh: []
   http: []
 eventListener:
   replicas: 1

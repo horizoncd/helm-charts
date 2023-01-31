@@ -436,15 +436,10 @@ We have embedded `Tekton Pipeline & Task` as the default CI definition. The defa
 
 ```
 tektonci-resources:
-  horizon:
-    deployTask:
-      horizonApiUrl: http://horizon-core
   auth:
     dockerConfigJson: {    "auths":    {        "harbor.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
   gitRepos:
-    ssh:
-      url: ""
-      privateKey: ""
+    ssh: []
     http: []
   extraVolumeMounts: []
 ```
