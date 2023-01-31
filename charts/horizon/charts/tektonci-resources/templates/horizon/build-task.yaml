@@ -33,7 +33,7 @@ spec:
       timeout: {{.}}
       {{- end}}
       script:
-      {{ toYaml tpl( .Values.horizon.script.git .) | nindent 8 }}
+      {{ toYaml (tpl .Values.horizon.script.git .) | nindent 8 }}
       volumeMounts:
         - name: git-token
           mountPath: /workspace/git-token
@@ -48,7 +48,7 @@ spec:
         - name: "TZ"
           value: Asia/Shanghai
       script:
-      {{ toYaml tpl( .Values.horizon.script.compile .) | nindent 8 }}
+      {{ toYaml (tpl .Values.horizon.script.compile .) | nindent 8 }}
       {{ if .Values.extraVolumeMounts -}}
       volumeMounts:
 {{- include "tektonci.extraVolumeMounts" . | indent 8 }}
@@ -62,7 +62,7 @@ spec:
         - name: DOCKER_CONFIG
           value: /tekton/home/.docker/
       script:
-      {{ toYaml tpl( .Values.horizon.script.image .) | nindent 8 }}
+      {{ toYaml (tpl .Values.horizon.script.image .) | nindent 8 }}
       {{ if .Values.extraVolumeMounts -}}
       volumeMounts:
 {{- include "tektonci.extraVolumeMounts" . | indent 8 }}
