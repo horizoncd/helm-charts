@@ -4,7 +4,7 @@ description: A CICD DevOps Platform
 
 type: application
 
-version: 2.0.1
+version: 2.0.2
 appVersion: v2.0.1
 
 dependencies:
