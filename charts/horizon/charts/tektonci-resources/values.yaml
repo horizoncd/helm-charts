@@ -34,7 +34,7 @@ horizon:
 
       # config git ssh
       rm -rf /root/.ssh && ln -s /tekton/home/.ssh /root
-      echo -e 'StrictHostKeyChecking no' >> /root/.ssh/config
+      echo -e 'Host *\n    StrictHostKeyChecking no' >> /root/.ssh/config
 
       # check https url and match token
       retrieve_pull_url() {
