@@ -18,6 +18,9 @@ spec:
       labels:
 {{ include "horizon.matchLabels" . | indent 8 }}
         component: job
+{{- if .Values.job.additionalLabels }}
+{{ toYaml .Values.job.additionalLabels | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config-cm.yaml") . | sha256sum }}
     spec:

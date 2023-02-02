@@ -7,4 +7,4 @@ version: 2.0.1
 
 appVersion: 0.18.1
 
-description: Helm chart for Tekton pipelines， Tekton triggers and Tekton dashboard.
+description: Helm chart for Tekton pipelines，Tekton triggers and Tekton dashboard.

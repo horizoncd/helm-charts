@@ -45,7 +45,7 @@ config:
       kubeconfig: ""
       s3:
         accessKey: admin
-        secretKey: admin
+        secretKey: qOIh3Xt5jg
         region: china
         endpoint: "{{ .Release.Name }}-minio:9000"
         bucket: horizon
@@ -94,12 +94,13 @@ ingress:
 
 core:
   replicas: 1
+  additionalLabels: {}
   image:
     repository: horizoncd/horizon-core
     tag: v2.0.1
   args:
     loglevel:
-    gitOpsRepoDefaultBranch: main
+    gitOpsRepoDefaultBranch: master
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2058,12 +2059,13 @@ core:
 
 
 job:
+  additionalLabels: {}
   image:
     repository: horizoncd/horizon-job
     tag: v2.0.1
   args:
     loglevel:
-    gitOpsRepoDefaultBranch: main
+    gitOpsRepoDefaultBranch: master
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -3090,7 +3092,7 @@ mysql:
 gitlab:
   enabled: true
   image: gitlab/gitlab-ce
-  imageTag: "15.5.1-ce.0"
+  imageTag: "13.11.7-ce.0"
   ingress:
     enabled: true
     hosts:
