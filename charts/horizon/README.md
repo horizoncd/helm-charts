@@ -436,14 +436,12 @@ We have embedded `Tekton Pipeline & Task` as the default CI definition. The defa
 
 ```
 tektonci-resources:
-  horizon:
-    deployTask:
-      horizonApiUrl: http://horizon-core
   auth:
     dockerConfigJson: {    "auths":    {        "harbor.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
-  gitRepos: []
+  gitRepos:
+    ssh: []
+    http: []
+  extraVolumeMounts: []
 ```
 
-If you want to define your own CI logics, you need to do the following steps:
-
-1. Modify scripts in the path: `tektonci-resources.horiozn.script`
+If you want to define your own CI logics, please refer to [custom CI instructions](https://horizoncd.github.io/docs/tutorials/custom-ci)

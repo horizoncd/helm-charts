@@ -17,7 +17,7 @@ horizon:
       connectTime: 5
       maxTime: 10
       retry: 2
-    horizonApiUrl: http://horizon-backend-core.horizon:80
+    horizonApiUrl: http://horizon-core.horizoncd.svc.cluster.local
   pipelineRun:
     podTemplate: {}
   ingress:
@@ -31,6 +31,12 @@ horizon:
       export GIT_REPOSITORY_URL="$(params.gitRepositoryUrl)"
       export GIT_COMMIT="$(params.gitCommit)"
       export GIT_PULL_URL=""
+
+      # config git ssh
+      rm -rf /root/.ssh && ln -s /tekton/home/.ssh /root
+      echo -e 'Host *\n    StrictHostKeyChecking no' >> /root/.ssh/config
+
+      # check https url and match token
       retrieve_pull_url() {
         cd "$GIT_TOKENS_DIR"
         URLs=$(yq '.[].url' git-tokens)
@@ -48,6 +54,8 @@ horizon:
         done
       } && retrieve_pull_url
       [[ -z "$GIT_PULL_URL" ]] && GIT_PULL_URL="$GIT_REPOSITORY_URL"
+
+      # pull code
       git clone "$GIT_PULL_URL" "$SOURCE_DIR" && {
         cd "$SOURCE_DIR"
         git checkout "$GIT_COMMIT"
@@ -273,7 +281,7 @@ horizon:
         CONTENT_TYPE="application/json"
         ARGS=("${ARGS[@]}" "-X" "$METHOD")
         ARGS=("${ARGS[@]}" "-H" "'Content-Type: $CONTENT_TYPE'" \
-                            "-H" "'X-Horizon-Jwt-Token: $TOKEN'" \
+                            "-H" "'X-Horizon-JWT-Token: $TOKEN'" \
                             "-H" "'X-Request-Id: $REQUEST_ID'" )
         CMD="curl -k -sSL "${ARGS[@]}" \
                     "$([[ ! -z "$OUTPUT" ]] && echo "-o $OUTPUT")" '$URL'"
@@ -313,6 +321,9 @@ horizon:
       deploy
 auth:
   dockerConfigJson: "{}"
-gitRepos: []
+gitRepos:
+  ssh: []
+  http: []
 eventListener:
   replicas: 1
+extraVolumeMounts: []
