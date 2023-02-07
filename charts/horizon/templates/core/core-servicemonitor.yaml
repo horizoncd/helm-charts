@@ -5,6 +5,7 @@ metadata:
   name: {{ template "horizon.core" . }}
   labels:
 {{ include "horizon.labels" . | indent 4 }}
+    component: core
 spec:
   endpoints:
     - interval: 30s
@@ -13,6 +14,7 @@ spec:
   selector:
     matchLabels:
 {{ include "horizon.labels" . | indent 6 }}
+      component: core
 {{- end}}
 
 
