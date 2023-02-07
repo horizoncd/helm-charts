@@ -4,6 +4,7 @@ metadata:
   name: {{ template "horizon.swagger" . }}
   labels:
 {{ include "horizon.labels" . | indent 4 }}
+    component: swagger
 spec:
   ports:
     - name: http

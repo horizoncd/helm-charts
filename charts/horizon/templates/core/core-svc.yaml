@@ -4,6 +4,7 @@ metadata:
   name: {{ template "horizon.core" . }}
   labels:
 {{ include "horizon.labels" . | indent 4 }}
+    component: core
 spec:
   ports:
     - name: http
