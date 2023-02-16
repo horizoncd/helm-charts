@@ -2,8 +2,6 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
   name: horizon-taskbinding
-  annotations:
-    "helm.sh/hook": "post-install,post-upgrade"
 spec:
   params:
     - name: token

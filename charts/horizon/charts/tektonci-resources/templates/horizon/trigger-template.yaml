@@ -2,8 +2,6 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
   name: horizon-triggertemplate
-  annotations:
-    "helm.sh/hook": "post-install,post-upgrade"
 spec:
   params:
     - name: token
@@ -49,8 +47,6 @@ spec:
       kind: PipelineRun
       metadata:
         name: $(tt.params.cluster)-$(tt.params.pipelinerunID)
-        annotations:
-          "helm.sh/hook": "post-install,post-upgrade"
       spec:
         pipelineRef:
           name: horizon-pipeline
