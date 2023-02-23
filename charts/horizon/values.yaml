@@ -97,7 +97,7 @@ core:
   additionalLabels: {}
   image:
     repository: horizoncd/horizon-core
-    tag: v2.0.4
+    tag: v2.0.5
   args:
     loglevel:
     gitOpsRepoDefaultBranch: master
@@ -2096,7 +2096,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.0.3
+    tag: v2.0.4
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2170,6 +2170,7 @@ roles:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
+            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
@@ -2305,6 +2306,7 @@ roles:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
+            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
@@ -2491,6 +2493,7 @@ roles:
             - applications/clusters
             - clusters/builddeploy
             - clusters/deploy
+            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
@@ -2786,6 +2789,7 @@ scopes:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
+            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
