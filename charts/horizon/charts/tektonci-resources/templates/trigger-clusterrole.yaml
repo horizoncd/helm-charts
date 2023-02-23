@@ -7,7 +7,7 @@ rules:
 - apiGroups: ["triggers.tekton.dev"]
   resources: ["clustertriggerbindings"]
   verbs: ["get", "list", "watch"]
-{{- if .Values.useNewTrigger }}
+{{- if .Values.enableV1betaEventListener }}
 - apiGroups: ["triggers.tekton.dev"]
   resources: ["clusterinterceptors"]
   verbs: ["get", "list", "watch"]

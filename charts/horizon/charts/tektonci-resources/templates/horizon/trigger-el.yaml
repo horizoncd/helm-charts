@@ -1,4 +1,4 @@
-{{- if not .Values.useNewTrigger }}
+{{- if not .Values.enableV1betaEventListener }}
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
