@@ -13,12 +13,24 @@ data:
   GITLAB_TIMEZONE: {{ .Values.config.GITLAB_TIMEZONE | quote }}
   {{- end }}
   init.sh: |
-      while true
-      do
-        CHECK_STATUS="$(curl -s -o /dev/null -w "%{http_code}" http://localhost/help)"
-        [[ "$CHECK_STATUS" == 20* ]] && {
-          gitlab-rails runner "token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Automation token'); token.set_token('{{ .Values.config.GITLAB_ROOT_ACCESS_TOKEN }}'); token.save!"
-          exit 0
-        }
-        sleep 10
-      done
+    while true
+    do
+      CHECK_STATUS="$(curl -s -o /dev/null -w "%{http_code}" http://localhost/help)"
+      [[ "$CHECK_STATUS" == 20* ]] && {
+        gitlab-rails runner /tmp/script.rb
+        exit 0
+      }
+      sleep 10
+    done
+  script.rb: |
+    # clear token to solve 500 error, refer: https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59623,
+    # https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26829/diffs
+    Project.update(runners_token: nil, runners_token_encrypted: nil)
+    Namespace.update(runners_token: nil, runners_token_encrypted: nil)
+
+    # create personal access token
+    token = User.find_by_username('root').personal_access_tokens.find_by_name('Automation token')
+    token.delete if token
+    token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Automation token')
+    token.set_token('horizon-access-token')
+    token.save!

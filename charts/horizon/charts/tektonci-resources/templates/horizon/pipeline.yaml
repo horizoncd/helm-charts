@@ -8,19 +8,33 @@ metadata:
 spec:
   params:
     - name: token
+      type: string
     - name: application
+      type: string
     - name: cluster
+      type: string
     - name: clusterID
+      type: string
     - name: environment
+      type: string
     - name: gitRepositoryUrl
+      type: string
     - name: gitSubfolder
+      type: string
     - name: gitCommit
+      type: string
     - name: gitBranch
+      type: string
     - name: gitTag
+      type: string
     - name: pipelineJSONBlob
+      type: string
     - name: imageURL
+      type: string
     - name: pipelinerunID
+      type: string
     - name: requestID
+      type: string
   workspaces:
     - name: buildinfo
   tasks:

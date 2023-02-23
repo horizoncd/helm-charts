@@ -8,6 +8,9 @@ version: 2.0.4
 appVersion: v2.0.5
 
 dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 2.x.x
   - name: gitlab
     version: 2.0.1
     repository: https://horizoncd.github.io/helm-charts
