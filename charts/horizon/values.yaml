@@ -2170,7 +2170,6 @@ roles:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
@@ -2306,7 +2305,6 @@ roles:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
@@ -2493,7 +2491,6 @@ roles:
             - applications/clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
@@ -2789,7 +2786,6 @@ scopes:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/restart
