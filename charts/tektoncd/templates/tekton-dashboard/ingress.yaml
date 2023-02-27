@@ -1,0 +1,17 @@
+{{- if .Values.tektonDashboard.ingress.host }}
+kind: Ingress
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
+metadata:
+  name: tekton-dashboard
+  namespace: {{ .Release.Namespace }}
+spec:
+  rules:
+    - host: {{ .Values.tektonDashboard.ingress.host }}
+      http:
+        paths:
+          - path: /
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            pathType: ImplementationSpecific
+            {{- end }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" "tekton-dashboard" "servicePort" 9097 "context" $)  | nindent 14 }}
+{{- end }}

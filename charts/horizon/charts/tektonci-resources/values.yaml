@@ -135,7 +135,6 @@ horizon:
     image: |
       #!/bin/bash
       set -e
-
       export BUILD_TYPE="$(cat $(workspaces.buildinfo.path)/build-type)"
 
       export APPLICATION="$(params.application)"
@@ -154,6 +153,7 @@ horizon:
 
       echo -e "\nstart building: $DOCKER_IMAGE"
 
+      export DOCKER_CONFIG=~/.docker
       CMD_KANIKO="time /kaniko/executor --skip-tls-verify --context=${CONTEXT} \
           --snapshotMode=redo \
           --use-new-run \
@@ -329,3 +329,5 @@ gitRepos:
 eventListener:
   replicas: 1
 extraVolumeMounts: []
+# When set true, custom resources of tekton triggers like EventListener are rendered based on tekton triggers whose version is above v0.17.0.
+enableV1betaEventListener: true

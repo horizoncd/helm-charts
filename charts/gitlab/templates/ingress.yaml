@@ -1,6 +1,6 @@
 {{- $releaseName := .Release.Name -}}
 {{- $servicePort := .Values.httpPort -}}
-apiVersion: extensions/v1beta1
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   annotations:
@@ -18,7 +18,8 @@ spec:
       http:
         paths:
           - path: /
-            backend:
-              serviceName: {{ printf "%s-%s" $releaseName "gitlab" | trunc 63 }}
-              servicePort: {{ $servicePort }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            pathType: ImplementationSpecific
+            {{- end }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (printf "%s-%s" $releaseName "gitlab" | trunc 63) "servicePort" $servicePort "context" $)  | nindent 14 }}
   {{- end }}

@@ -88,6 +88,7 @@ config:
 
 ingress:
   enabled: true
+  pathType: ImplementationSpecific
   hosts:
     - horizon.h8r.site
   tls: []
@@ -116,6 +117,7 @@ core:
     port: 80
   cloudEventIngress:
     enabled: false
+    pathType: ImplementationSpecific
     hosts: []
   envs: {}
   monitor:
@@ -2086,7 +2088,7 @@ swagger:
     fsGroup: 10001
   envs:
     BASE_URL: /apis/swagger
-    SWAGGER_JSON: /openapi/restful.json
+    SWAGGER_JSON: /openapi/restful-v2.0.0.json
   service:
     port: 80
     targetPort: 8080
@@ -3082,12 +3084,12 @@ mysql:
   initdbScriptsConfigMap: horizon-dbinit
   primary:
     resources:
-      limits:
-        cpu: 250m
-        memory: 1Gi
       requests:
         cpu: 100m
         memory: 500Mi
+      limits:
+        cpu: "1"
+        memory: 2Gi
 
 gitlab:
   enabled: true
@@ -3106,11 +3108,11 @@ gitlab:
     GITLAB_TIMEZONE: "Asia/Shanghai"
   resources:
     requests:
-      memory: 4Gi
-      cpu: 2
+      cpu: 500m
+      memory: 2Gi
     limits:
+      cpu: "1"
       memory: 4Gi
-      cpu: 2
 
 chartmuseum:
   enabled: true

@@ -1,17 +1,18 @@
 {{- if .Values.horizon.ingress.hosts }}
-apiVersion: extensions/v1beta1
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: horizon-listener
 spec:
   rules:
-  {{- range .Values.horizon.ingress.hosts }}
-  - host: {{ . }}
-    http:
-      paths:
-      - backend:
-          serviceName: el-horizon-listener
-          servicePort: 8080
-        path: /
-  {{- end }}
-{{- end }} 
+    {{- range .Values.horizon.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: /
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            pathType: ImplementationSpecific
+            {{- end }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" "el-horizon-listener" "servicePort" 8080 "context" $)  | nindent 14 }}
+    {{- end }}
+{{- end }}

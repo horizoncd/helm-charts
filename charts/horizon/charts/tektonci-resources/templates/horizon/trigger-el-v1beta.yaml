@@ -1,15 +1,13 @@
-{{- if not .Values.enableV1betaEventListener }}
-apiVersion: triggers.tekton.dev/v1alpha1
+{{- if .Values.enableV1betaEventListener }}
+apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
   name: horizon-listener
-  annotations:
-    "helm.sh/hook": "post-install,post-upgrade"
 spec:
   serviceAccountName: tekton-triggers-sa
-  replicas: {{ .Values.eventListener.replicas }}
   resources:
     kubernetesResource:
+      replicas: {{ .Values.eventListener.replicas }}
       spec:
         template:
           spec:
@@ -25,10 +23,13 @@ spec:
     - bindings:
       - ref: horizon-taskbinding
       template:
-        name: horizon-triggertemplate
+        ref: horizon-triggertemplate
       interceptors:
-        - cel:
-            overlays:
-              - key: pipelineJSONBlob
-                expression: "body.pipelineJSONBlob.marshalJSON()"
+        - ref:
+            name: "cel"
+          params:
+            - name: "overlays"
+              value:
+                - key: pipelineJSONBlob
+                  expression: "body.pipelineJSONBlob.marshalJSON()"
 {{- end }}

@@ -1,6 +1,6 @@
 name: gitlab
 apiVersion: v2
-version: 2.0.1
+version: 2.0.2
 appVersion: 15.5.1
 description: GitLab Community Edition
 keywords:
@@ -11,3 +11,8 @@ keywords:
 - code review
 - wiki
 home: https://about.gitlab.com
+
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 2.x.x

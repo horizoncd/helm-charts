@@ -58,9 +58,6 @@ spec:
       {{- with .Values.horizon.buildTask.timeout.imageStep }}
       timeout: {{.}}
       {{- end}}
-      env:
-        - name: DOCKER_CONFIG
-          value: /tekton/home/.docker/
       script:
       {{ toYaml (tpl .Values.horizon.script.image .) | nindent 8 }}
       {{ if .Values.extraVolumeMounts -}}
