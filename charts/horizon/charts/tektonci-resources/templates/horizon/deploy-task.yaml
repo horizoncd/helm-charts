@@ -3,6 +3,8 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: horizon-deploy
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
 spec:
   params:
     - name: token

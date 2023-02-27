@@ -2,6 +2,8 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
   name: horizon-listener
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
 spec:
   serviceAccountName: tekton-triggers-sa
   replicas: {{ .Values.eventListener.replicas }}

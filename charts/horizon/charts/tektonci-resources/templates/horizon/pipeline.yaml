@@ -3,6 +3,8 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: horizon-pipeline
+  annotations:
+    "helm.sh/hook": "post-install,post-upgrade"
 spec:
   params:
     - name: token
