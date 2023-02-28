@@ -98,7 +98,7 @@ core:
   additionalLabels: {}
   image:
     repository: horizoncd/horizon-core
-    tag: v2.0.5
+    tag: v2.0.6
   args:
     loglevel:
     gitOpsRepoDefaultBranch: master
@@ -2064,7 +2064,7 @@ job:
   additionalLabels: {}
   image:
     repository: horizoncd/horizon-job
-    tag: v2.0.4
+    tag: v2.0.6
   args:
     loglevel:
     gitOpsRepoDefaultBranch: master
@@ -2082,7 +2082,7 @@ swagger:
   replicas: 1
   image:
     repository: horizoncd/horizon-swagger
-    tag: v2.0.4
+    tag: v2.0.6
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
