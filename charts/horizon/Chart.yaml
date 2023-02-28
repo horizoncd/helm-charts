@@ -4,7 +4,7 @@ description: A CICD DevOps Platform
 
 type: application
 
-version: 2.0.5
+version: 2.1.0
 appVersion: v2.0.5
 
 dependencies:
@@ -12,11 +12,11 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     version: 2.x.x
   - name: gitlab
-    version: 2.0.1
+    version: 2.0.2
     repository: https://horizoncd.github.io/helm-charts
     condition: gitlab.enabled
   - name: tektoncd
-    version: 2.0.1
+    version: 2.1.0
     repository: https://horizoncd.github.io/helm-charts
     condition: tektoncd.enabled
   - name: minio

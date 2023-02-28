@@ -330,4 +330,4 @@ eventListener:
   replicas: 1
 extraVolumeMounts: []
 # When set true, custom resources of tekton triggers like EventListener are rendered based on tekton triggers whose version is above v0.17.0.
-enableV1betaEventListener: false
+enableV1betaEventListener: true
