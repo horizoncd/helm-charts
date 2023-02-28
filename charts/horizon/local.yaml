@@ -1,0 +1,36 @@
+config:
+  gitRepos:
+    - kind: github
+      url: https://github.com
+      token: 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
+
+gitlab:
+  enabled: true
+  image: yrzr/gitlab-ce-arm64v8
+  imageTag: "13.11.7-ce.0"
+
+core:
+  replicas: 1
+  image:
+    repository: dockerisprettygreat/horizon-core
+    tag: v2.0.5-rc
+  args:
+    loglevel: warn
+
+swagger:
+  replicas: 1
+  image:
+    repository: dockerisprettygreat/horizon-swagger
+    tag: v2.0.4
+
+job:
+  replicas: 1
+  image:
+    repository: dockerisprettygreat/horizon-job
+    tag: v2.0.4
+
+tektonci-resources:
+  gitRepos:
+    http:
+      - url: https://github.com
+        token: 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
