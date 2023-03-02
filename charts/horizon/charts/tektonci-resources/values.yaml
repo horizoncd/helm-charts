@@ -153,7 +153,9 @@ horizon:
 
       echo -e "\nstart building: $DOCKER_IMAGE"
 
-      export DOCKER_CONFIG=~/.docker
+      # config.json need to be put under dir whose path is /kaniko, see https://github.com/GoogleContainerTools/kaniko/issues/450
+      # otherwise kaniko can't get the credential in multistage building
+      cp ~/.docker/config.json /kaniko/.docker/config.json
       CMD_KANIKO="time /kaniko/executor --skip-tls-verify --context=${CONTEXT} \
           --snapshotMode=redo \
           --use-new-run \
