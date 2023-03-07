@@ -41,3 +41,11 @@ spec:
         {{- if .Values.swagger.resources }}
         resources: {{ toYaml .Values.swagger.resources | nindent 10 }}
         {{- end }}
+        volumeMounts:
+          {{- if .Values.swagger.extraVolumeMounts }}
+          {{ toYaml .Values.swagger.extraVolumeMounts | nindent 10 }}
+          {{- end }}
+      volumes:
+        {{- if .Values.swagger.extraVolumes }}
+        {{ toYaml .Values.swagger.extraVolumes | nindent 8 }}
+        {{- end }}

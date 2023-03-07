@@ -111,6 +111,9 @@ spec:
             name: buildschema
             readOnly: true
             subPath: build-ui-schema.json
+          {{- if .Values.core.extraVolumeMounts }}
+          {{ toYaml .Values.core.extraVolumeMounts | nindent 10 }}
+          {{- end }}
       volumes:
       - name: config
         configMap:
@@ -144,6 +147,9 @@ spec:
               path: build-json-schema.json
             - key: build-ui-schema.json
               path: build-ui-schema.json
+      {{- if .Values.core.extraVolumes }}
+      {{ toYaml .Values.core.extraVolumes | nindent 6 }}
+      {{- end }}
       {{- with .Values.core.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
       {{- end }}

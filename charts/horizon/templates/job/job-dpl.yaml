@@ -72,6 +72,9 @@ spec:
             mountPath: /home/appops/config
             subPath: config
             readOnly: true
+          {{- if .Values.job.extraVolumeMounts }}
+          {{ toYaml .Values.job.extraVolumeMounts | nindent 10 }}
+          {{- end }}
       volumes:
       - name: config
         configMap:
@@ -79,6 +82,9 @@ spec:
           items:
           - key: config
             path: config
+      {{- if .Values.job.extraVolumes }}
+      {{ toYaml .Values.job.extraVolumes | nindent 6 }}
+      {{- end }}
       {{- with .Values.job.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
       {{- end }}
