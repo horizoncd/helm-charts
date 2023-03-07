@@ -118,7 +118,7 @@ helm uninstall horizon -n horizoncd
 ### Core deployment parameters
 
 | Name                                | Description                                                                                                                                                                                                                                       | Value                        |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
 | `core.replica`                      | The replica count                                                                                                                                                                                                                                 | 1                            |
 | `core.image.repository`             | Repository for Horizon core image                                                                                                                                                                                                                 | horizoncd/horizon            |
 | `core.image.tag`                    | Tag for Horizon core image                                                                                                                                                                                                                        | v1.0.0                       |
@@ -136,13 +136,15 @@ helm uninstall horizon -n horizoncd
 | `core.cloudEventIngress.enabled`    | Enable ingress of the cloudEvent or not                                                                                                                                                                                                           | true                         |
 | `core.cloudEventIngress.hosts`      | The hosts of the cloudEvent's ingress                                                                                                                                                                                                             | []                           |
 | `core.envs`                         | The environments in Horizon core                                                                                                                                                                                                                  | {}                           |
+| `core.extraVolumeMounts`            | The extra volume mounts in Horizon core                                                                                                                                                                                                           | []                           |
+| `core.extraVolumes`                 | The extra volumes in Horizon core                                                                                                                                                                                                                 | []                           |
 | `core.monitor.enabled`              | Enable monitor of Horizon core or not                                                                                                                                                                                                             | false                        |
 | `core.grafanaDashboards`            | Grafana dashboards in json format. Please note that the default dashboards are built based on metrics of `Kube-state-metrics:v1.9.7`, you may need to modify the dashboards if you are using a higher verion becuase of renaming in some metrics. | - name: pod<br/>  value: xxx |
 
 ### Web deployment parameters
 
 | Name                            | Description                               | Value         |
-| ------------------------------- | ----------------------------------------- | ------------- |
+| ------------------------------- |-------------------------------------------| ------------- |
 | `web.replicas`                  | The replica count                         | 1             |
 | `web.image.repository`          | Repository for Horizon web image          | horizoncd/web |
 | `web.image.tag`                 | Tag for Horizon web image                 | v1.0.0        |
@@ -154,11 +156,13 @@ helm uninstall horizon -n horizoncd
 | `web.affinity`                  | Node/Pod affinities                       | {}            |
 | `web.port`                      | Port of Horizon web container             | 8080          |
 | `web.service.port`              | Kubernetes port where service is exposed  | 80            |
+| `web.extraVolumeMounts`         | The extra volume mounts in Horizon web    | []            |
+| `web.extraVolumes`              | The extra volumes in Horizon web          | []            |
 
 ### Job deployment parameters
 
 | Name                               | Description                               | Value         |
-| ---------------------------------- | ----------------------------------------- | ------------- |
+|------------------------------------|-------------------------------------------| ------------- |
 | `job.image.repository`             | Repository for Horizon job image          | horizoncd/job |
 | `job.image.tag`                    | Tag for Horizon job image                 | v1.0.0        |
 | `job.args.loglevel`                | Loglevel of Horizon job                   | info          |
@@ -170,11 +174,13 @@ helm uninstall horizon -n horizoncd
 | `job.nodeSelector`                 | Node labels for pod assignment            | {}            |
 | `job.tolerations`                  | Tolerations for pod assignment            | []            |
 | `job.affinity`                     | Node/Pod affinities                       | {}            |
+| `job.extraVolumeMounts`            | The extra volume mounts in Horizon job    | []            |
+| `job.extraVolumes`                 | The extra volumes in Horizon job          | []            |
 
 ### Swagger deployment parameters
 
 | Name                                | Description                                                   | Value                 |
-| ----------------------------------- | ------------------------------------------------------------- | --------------------- |
+| ----------------------------------- |---------------------------------------------------------------|-----------------------|
 | `swagger.replicas`                  | The replica count                                             | 1                     |
 | `swagger.image.repository`          | Repository for Horizon swagger image                          | horizoncd/swagger     |
 | `swagger.image.tag`                 | Tag for Horizon swagger image                                 | v1.0.0                |
@@ -185,6 +191,8 @@ helm uninstall horizon -n horizoncd
 | `swagger.service.port`              | Kubernetes port where service is exposed                      | 80                    |
 | `swagger.service.targetPort`        | The port on which the service will send requests to           | 8080                  |
 | `swagger.resources`                 | The [resources] to allocate for container                     | {}                    |
+| `swagger.extraVolumeMounts`         | The extra volume mounts in Horizon swagger                    | []                    |
+| `swagger.extraVolumes`              | The extra volumes in Horizon swagger                          | []                    |
 
 ### Third-party components parameters
 

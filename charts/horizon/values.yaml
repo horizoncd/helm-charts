@@ -120,6 +120,8 @@ core:
     pathType: ImplementationSpecific
     hosts: []
   envs: {}
+  extraVolumeMounts: []
+  extraVolumes: []
   monitor:
     enabled: false
   grafanaDashboards:
@@ -2077,6 +2079,8 @@ job:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  extraVolumeMounts: []
+  extraVolumes: []
 
 swagger:
   replicas: 1
@@ -2093,6 +2097,8 @@ swagger:
     port: 80
     targetPort: 8080
   resources: {}
+  extraVolumeMounts: []
+  extraVolumes: []
 
 web:
   replicas: 1
@@ -2109,6 +2115,8 @@ web:
   port: 8080
   service:
     port: 80
+  extraVolumeMounts: []
+  extraVolumes: []
 
 imagePullPolicy: IfNotPresent
 imagePullSecrets: []
