@@ -1,3 +1,5 @@
+registry: &registry docker.io
+
 fullnameOverride:
 
 globalNamePrefix:
@@ -6,6 +8,7 @@ globalNamePrefix:
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 image:
+  registry: *registry
   repository: redis
   tag: 6.0.7-alpine
   pullPolicy: IfNotPresent
@@ -61,6 +64,7 @@ haproxy:
     port: 6380
   replicas: 3
   image:
+    registry: *registry
     repository: haproxy
     tag: 2.0.4
     pullPolicy: IfNotPresent
@@ -186,7 +190,7 @@ rbac:
 sysctlImage:
   enabled: false
   command: []
-  registry: docker.io
+  registry: *registry
   repository: busybox
   tag: 1.31.1
   pullPolicy: Always
@@ -407,6 +411,7 @@ affinity: |
 # Prometheus exporter specific configuration options
 exporter:
   enabled: false
+  registry: *registry
   image: oliver006/redis_exporter
   tag: v1.15.1
   pullPolicy: IfNotPresent

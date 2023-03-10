@@ -12,11 +12,11 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     version: 2.x.x
   - name: gitlab
-    version: 2.0.2
+    version: 2.0.3
     repository: https://horizoncd.github.io/helm-charts
     condition: gitlab.enabled
   - name: tektoncd
-    version: 2.1.0
+    version: 2.1.1
     repository: https://horizoncd.github.io/helm-charts
     condition: tektoncd.enabled
   - name: minio

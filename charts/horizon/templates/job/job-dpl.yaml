@@ -34,7 +34,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: job
-        image: {{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}
+        image: {{ .Values.job.image.registry }}/{{ .Values.job.image.repository }}:{{ .Values.job.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         args:
         - --config=/home/appops/config

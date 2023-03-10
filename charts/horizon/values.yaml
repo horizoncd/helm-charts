@@ -1,3 +1,7 @@
+registry:
+  gcrRegistry: &gcr gcr.io
+  dockerRegistry: &docker docker.io
+
 config:
   serverConfig:
     port: 8080
@@ -97,6 +101,7 @@ core:
   replicas: 1
   additionalLabels: {}
   image:
+    registry: *docker
     repository: horizoncd/horizon-core
     tag: v2.0.8
   args:
@@ -2065,6 +2070,7 @@ core:
 job:
   additionalLabels: {}
   image:
+    registry: *docker
     repository: horizoncd/horizon-job
     tag: v2.0.8
   args:
@@ -2085,6 +2091,7 @@ job:
 swagger:
   replicas: 1
   image:
+    registry: *docker
     repository: horizoncd/horizon-swagger
     tag: v2.0.8
   securityContext:
@@ -2103,6 +2110,7 @@ swagger:
 web:
   replicas: 1
   image:
+    registry: *docker
     repository: horizoncd/horizon-web
     tag: v2.0.6
   securityContext:
@@ -3101,6 +3109,7 @@ mysql:
 
 gitlab:
   enabled: true
+  registry: *docker
   image: gitlab/gitlab-ce
   imageTag: "13.11.7-ce.0"
   ingress:
@@ -3211,6 +3220,7 @@ argo-cd:
 
 tektoncd:
   enabled: true
+  registry: *gcr
   configDefaults:
     default-cloud-events-sink: http://horizon-core-cloudevent.horizoncd/apis/internal/cloudevents
   tektonDashboard:
@@ -3263,4 +3273,3 @@ tektonci-resources:
     ssh: []
     http: []
   extraVolumeMounts: []
-
