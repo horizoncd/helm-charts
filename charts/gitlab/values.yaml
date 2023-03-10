@@ -1,5 +1,6 @@
 nameOverride:
 
+imagePrefix: "docker.io"
 image: gitlab/gitlab-ce
 imageTag: "15.5.1-ce.0"
 

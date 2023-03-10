@@ -924,8 +924,8 @@ spec:
       serviceAccountName: tekton-triggers-controller
       containers:
         - name: tekton-triggers-controller
-          image: {{ .Values.tektonTriggersController.image }}
-          args: ["-logtostderr", "-stderrthreshold", "INFO", "-el-image", "{{ .Values.tektonTriggersController.elImage }}", "-el-port", "8080", "-el-security-context=true", "-el-readtimeout", "5", "-el-writetimeout", "40", "-el-idletimeout", "120", "-el-timeouthandler", "30", "-period-seconds", "10", "-failure-threshold", "1"]
+          image: {{ .Values.imagePrefix }}/{{ .Values.tektonTriggersController.image }}
+          args: ["-logtostderr", "-stderrthreshold", "INFO", "-el-image", "{{ .Values.imagePrefix }}/{{ .Values.tektonTriggersController.elImage }}", "-el-port", "8080", "-el-security-context=true", "-el-readtimeout", "5", "-el-writetimeout", "40", "-el-idletimeout", "120", "-el-timeouthandler", "30", "-period-seconds", "10", "-failure-threshold", "1"]
           env:
             - name: SYSTEM_NAMESPACE
               valueFrom:
@@ -1040,7 +1040,7 @@ spec:
         - name: webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: {{ .Values.tektonTriggersWebhook.image }}
+          image: {{ .Values.imagePrefix }}/{{ .Values.tektonTriggersWebhook.image }}
           env:
             - name: SYSTEM_NAMESPACE
               valueFrom:

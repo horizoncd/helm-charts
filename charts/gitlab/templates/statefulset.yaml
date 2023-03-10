@@ -27,7 +27,7 @@ spec:
               command:
               - bash
               - /tmp/init.sh
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.imagePrefix }}/{{ .Values.image }}:{{ .Values.imageTag }}"
         env:
         - name: GITLAB_OMNIBUS_CONFIG
           value: |

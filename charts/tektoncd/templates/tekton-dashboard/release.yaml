@@ -347,7 +347,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          image: {{ .Values.tektonDashboard.image }}
+          image: {{ .Values.imagePrefix }}/{{ .Values.tektonDashboard.image }}
           livenessProbe:
             httpGet:
               path: /health

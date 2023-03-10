@@ -1085,7 +1085,7 @@ spec:
       serviceAccountName: tekton-pipelines-controller
       containers:
         - name: tekton-pipelines-controller
-          image: {{ .Values.tektonPipelineController.image }}
+          image: {{ .Values.imagePrefix }}/{{ .Values.tektonPipelineController.image }}
           args: [
             # These images are built on-demand by `ko resolve` and are replaced
             # by image references by digest.
@@ -1334,7 +1334,7 @@ spec:
         - name: webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: {{ .Values.tektonPipelineWebhook.image }}
+          image: {{ .Values.imagePrefix }}/{{ .Values.tektonPipelineWebhook.image }}
           # Resource request required for autoscaler to take any action for a metric
           resources:
             requests:
