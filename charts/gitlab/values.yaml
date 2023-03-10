@@ -1,6 +1,6 @@
 nameOverride:
 
-imagePrefix: "docker.io"
+registry: "docker.io"
 image: gitlab/gitlab-ce
 imageTag: "15.5.1-ce.0"
 
