@@ -3068,6 +3068,7 @@ build_schema:
     }
 
 redis-ha:
+  registry: *docker  
   replicas: 1
   haproxy:
     enabled: false
@@ -3132,6 +3133,8 @@ gitlab:
       memory: 4Gi
 
 chartmuseum:
+  image:
+    repository: ghcr.io/helm/chartmuseum
   enabled: true
   ingress:
     enabled: true
@@ -3153,6 +3156,7 @@ chartmuseum:
       AWS_SECRET_ACCESS_KEY: qOIh3Xt5jg
 
 grafana:
+  image: 	grafana/grafana
   enabled: true
   defaultDashboardsEnabled: true
   adminPassword: admin
@@ -3174,12 +3178,22 @@ grafana:
 
 argo-cd:
   enabled: true
+  applicationController:
+    image:
+      repository: "argoproj/argocd"
   redis:
     enabled: false
+    image:
+      repository: "redis"
+  repoServer:
+    image:
+      repository: "argoproj/argocd"
   externalRedis:
     host: horizon-redis-ha
     port: 6379
   server:
+    image: 
+      repository: "argoproj/argocd"
     extraArgs:
       - --insecure
     ingress:
@@ -3237,6 +3251,12 @@ harbor:
     clusterIP:
       name: harbor
   externalURL: https://harbor.horizoncd.svc.cluster.local
+  nginx:
+    image:
+      repository: goharbor/nginx-photon
+  portal:
+    image:
+      repository: goharbor/harbor-portal
   persistence:
     imageChartStorage:
       disableredirect: true
@@ -3257,14 +3277,35 @@ harbor:
     enabled: false
   core:
     replicas: 1
+    image:
+      repository: goharbor/harbor-core
   jobservice:
     replicas: 1
+    image:
+      repository: goharbor/harbor-jobservice
   registry:
     replicas: 1
+    registry:
+      image:
+        repository: goharbor/registry-photon
+    controller:
+      image:
+        repository: goharbor/registry-photon
+  controller:
+    image:
+      repository: goharbor/harbor-registryctl
   notary:
     enabled: false
+    server:
+      image:
+        repository: goharbor/notary-server-photon
+    signer:
+      image:
+        repository: goharbor/notary-signer-photon
   trivy:
     enabled: false
+    image:
+      repository: goharbor/harbor-registryctl
 
 tektonci-resources:
   auth:
@@ -3273,3 +3314,6 @@ tektonci-resources:
     ssh: []
     http: []
   extraVolumeMounts: []
+
+global:
+  imageRegistry: *docker
