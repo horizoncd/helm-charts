@@ -1,0 +1,141 @@
+# supply the values.yaml of Horizon chart for user in China
+
+gitlab:
+  image: registry.cn-hangzhou.aliyuncs.com/horizoncd/gitlab.gitlab-ce
+  imageTag: 13.11.7-ce.0
+
+tektoncd:
+  tektonDashboard:
+    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.dashboard.cmd.dashboard:v0.13.0
+  tektonPipelineController:
+    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.pipeline.cmd.controller:v0.28.0
+    kubeconfigWriterImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.pipeline.cmd.kubeconfigwriter:v0.28.0
+    gitImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.pipeline.cmd.git-init:v0.28.0
+    entrypointImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.pipeline.cmd.entrypoint:v0.28.0
+    nopImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.pipeline.cmd.nop:v0.28.0
+    imagedigestExporterImage: registry.cn-hangzhou.aliyuncs.com/horizoncd.tektoncd.pipeline.cmd.imagedigestexporter:v0.28.0
+    pullRequestInitImage: registry.cn-hangzhou.aliyuncs.com/horizoncd.tektoncd.pipeline.cmd.pullrequest-init:v0.28.0
+    gsutilImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/gcr.io.google.com.cloudsdktool.cloud-sdk:302.0.0-slim
+    shellImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/gcr.io.distroless.base:debug
+  tektonPipelineWebhook:
+    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.pipeline.cmd.webhook:v0.28.0
+  tektonTriggerController:
+    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.controller:v0.17.0
+    elImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.eventlistenersink:v0.17.0
+  tektonTriggerWebhook:
+    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.webhook:v0.17.0
+  tektonTriggerInterceptor:
+    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.interceptors:v0.17.0
+
+redis-ha:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/redis
+    tag: 6.0.7-alpine
+  haproxy:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/haproxy
+      tag: 2.0.4
+  sysctlImage:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/busybox
+    tag: 1.31.1
+  exporter:
+    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/oliver006.redis_exporter
+    tag: v1.15.1
+
+# for horizon
+core:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-core
+job:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-job
+swagger:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-swagger
+web:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-web
+
+chartmuseum:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/ghcr.io.helm.chartmuseum
+    tag: v0.13.1
+
+grafana:
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/grafana.grafana
+    tag: 8.2.5
+
+argo-cd:
+  applicationController:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/quay.io.argoproj.argocd
+      tag: v2.4.11
+  redis:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/quay.io.argoproj.argocd
+      tag: v2.4.11
+  repoServer:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/quay.io.argoproj.argocd
+      tag: v2.4.11
+  server:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/quay.io.argoproj.argocd
+      tag: v2.4.11
+
+harbor:
+  nginx:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.nginx-photon
+      tag: v2.2.3
+  portal:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.harbor-portal
+      tag: v2.2.3
+  core:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.harbor-core
+      tag: v2.2.3
+  jobservice:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.harbor-jobservice
+      tag: v2.2.3
+  registry:
+    registry:
+      image:
+        repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.registry-photon
+        tag: v2.2.3
+    controller:
+      image:
+        repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.harbor-registryctl
+        tag: v2.2.3
+  notary:
+    server:
+      image:
+        repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.notary-server-photon
+        tag: v2.2.3
+    signer:
+      image:
+        repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.notary-signer-photon
+        tag: v2.2.3
+  trivy:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.trivy-adapter-photon
+      tag: v2.2.3
+  exporter:
+    image:
+      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.harbor-exporter
+      tag: v2.2.3
+
+mysql:
+  image:
+    registry: "registry.cn-hangzhou.aliyuncs.com"
+    repository: horizoncd/bitnami.mysql
+    tag: 8.0.31-debian-11-r0
+
+minio:
+  image: 
+    registry: "registry.cn-hangzhou.aliyuncs.com"
+    repository: horizoncd/bitnami.minio
+    tag: 2022.10.29-debian-11-r0
