@@ -49,7 +49,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: core
-        image: {{ .Values.core.image.repository }}:{{ .Values.core.image.tag | default .Chart.AppVersion }}
+        image: {{ .Values.core.image.registry }}/{{ .Values.core.image.repository }}:{{ .Values.core.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         args:
         - --config=/home/appops/config

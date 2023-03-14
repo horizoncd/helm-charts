@@ -75,7 +75,7 @@ spec:
     {{- end }}
       initContainers:
       - name: config-init
-        image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
+        image: {{ Values.haproxy.image.registry }}/{{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
         imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
         resources:
 {{ toYaml .Values.haproxy.init.resources | indent 10 }}
@@ -108,7 +108,7 @@ spec:
 {{ toYaml .Values.haproxy.securityContext | indent 8 }}
       containers:
       - name: haproxy
-        image: {{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
+        image: {{ .Values.haproxy.image.registry }}/{{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}
         imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
         livenessProbe:
           httpGet:

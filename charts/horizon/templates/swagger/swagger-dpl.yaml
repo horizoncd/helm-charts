@@ -27,7 +27,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: swagger
-        image: {{ .Values.swagger.image.repository }}:{{ .Values.swagger.image.tag | default .Chart.AppVersion }}
+        image: {{ .Values.swagger.image.registry }}/{{ .Values.swagger.image.repository }}:{{ .Values.swagger.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: TZ
