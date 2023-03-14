@@ -13,7 +13,7 @@ Once Helm is set up properly, add the repo as follows:
 helm repo add horizon https://horizoncd.github.io/helm-charts
 ```
 
-You can then run `helm search repo horizon` to see the charts.
+You can check our website for farthur usage instructions: https://horizoncd.github.io/docs/tutorials/how-to-install#install-horizon-by-helm
 
 ## Contributing
 
