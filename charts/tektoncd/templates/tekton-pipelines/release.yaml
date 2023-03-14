@@ -1089,16 +1089,21 @@ spec:
           args: [
             # These images are built on-demand by `ko resolve` and are replaced
             # by image references by digest.
-            "-kubeconfig-writer-image", "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/kubeconfigwriter:v0.28.0@sha256:12d08ecfb8bd5a635750909b2b1ea63454c97c77bef8aae7c0d6ea4308614c9d", "-git-image", "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.28.0@sha256:39b53980b255ef8af80086ac702f5b113d32f60cc4c8876b096ba37fc5912c81", "-entrypoint-image", "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/entrypoint:v0.28.0@sha256:61013ff4268fbf1046d623d3eab2bcb072e776202d86cb95ad7238a8c45c5420", "-nop-image", "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/nop:v0.28.0@sha256:81c38a3d11e9f82898ac34318436b7019c23a2e279c60cb721a72c6ecccad476", "-imagedigest-exporter-image", "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/imagedigestexporter:v0.28.0@sha256:2aa8bc18e7d947c44b18be9b74241d508026c0d2b224577212cedb5a2347ad6f", "-pr-image", "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/pullrequest-init:v0.28.0@sha256:57ec58d70867231a1d84e1b5f7298c6751859cd3426546c3ea7d759dffa8d1b2",
+            "-kubeconfig-writer-image", "{{ .Values.tektonPipelineController.kubeconfigWriterImage }}",
+            "-git-image", "{{ .Values.tektonPipelineController.gitImage }}",
+            "-entrypoint-image", "{{ .Values.tektonPipelineController.entrypointImage }}",
+            "-nop-image", "{{ .Values.tektonPipelineController.nopImage }}",
+            "-imagedigest-exporter-image", "{{ .Values.tektonPipelineController.imagedigestExporterImage }}",
+            "-pr-image", "{{ .Values.tektonPipelineController.pullRequestInitImage }}",
             # This is gcr.io/google.com/cloudsdktool/cloud-sdk:302.0.0-slim
-            "-gsutil-image", "gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:27b2c22bf259d9bc1a291e99c63791ba0c27a04d2db0a43241ba0f1f20f4067f",
+            "-gsutil-image", "{{ .Values.tektonPipelineController.gsutilImage }}",
             # The shell image must be root in order to create directories and copy files to PVCs.
             # gcr.io/distroless/base:debug as of Apirl 17, 2021
             # image shall not contains tag, so it will be supported on a runtime like cri-o
-            "-shell-image", "gcr.io/distroless/base:debug",
+            "-shell-image", "{{ .Values.tektonPipelineController.shellImage }}",
             # for script mode to work with windows we need a powershell image
             # pinning to nanoserver tag as of July 15 2021
-            "-shell-image-win", "mcr.microsoft.com/powershell:nanoserver@sha256:b6d5ff841b78bdf2dfed7550000fd4f3437385b8fa686ec0f010be24777654d6",
+            "-shell-image-win", "{{ .Values.tektonPipelineController.shellImageWin }}",
             # Experimental. Uncomment below to disable TaskRun and PipelineRun
             # reconcilers' built-in taskRef and pipelineRef resolution procedures.
             # "-experimental-disable-in-tree-resolution",
