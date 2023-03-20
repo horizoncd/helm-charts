@@ -82,6 +82,8 @@ spec:
             value: $(tt.params.pipelinerunID)
           - name: requestID
             value: $(tt.params.requestID)
+          - name: template
+            value: $(tt.params.template)
         workspaces:
           - name: buildinfo
             emptyDir: {}

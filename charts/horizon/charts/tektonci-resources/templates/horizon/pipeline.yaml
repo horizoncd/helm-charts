@@ -33,6 +33,8 @@ spec:
       type: string
     - name: requestID
       type: string
+    - name: template
+      type: string
   workspaces:
     - name: buildinfo
   tasks:
@@ -68,6 +70,8 @@ spec:
           value: $(params.pipelinerunID)
         - name: requestID
           value: $(params.requestID)
+        - name: template
+          value: $(params.template)
       workspaces:
         - name: buildinfo
           workspace: buildinfo
@@ -105,3 +109,5 @@ spec:
           value: $(params.pipelinerunID)
         - name: requestID
           value: $(params.requestID)
+        - name: template
+          value: $(params.template)
