@@ -19,10 +19,10 @@ tektoncd:
     shellImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/gcr.io.distroless.base:debug
   tektonPipelineWebhook:
     image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.pipeline.cmd.webhook:v0.28.0
-  tektonTriggerController:
+  tektonTriggersController:
     image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.controller:v0.17.0
     elImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.eventlistenersink:v0.17.0
-  tektonTriggerWebhook:
+  tektonTriggersWebhook:
     image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.webhook:v0.17.0
   tektonTriggerInterceptor:
     image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.interceptors:v0.17.0
