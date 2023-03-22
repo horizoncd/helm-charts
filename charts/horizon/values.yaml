@@ -101,7 +101,7 @@ core:
     tag: v2.0.9
   args:
     loglevel:
-    gitOpsRepoDefaultBranch: master
+    gitOpsRepoDefaultBranch:
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2069,6 +2069,7 @@ job:
     tag: v2.0.9
   args:
     loglevel:
+    gitOpsRepoDefaultBranch:
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
