@@ -11,35 +11,79 @@ dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
     version: 2.x.x
+
   - name: gitlab
-    version: 2.0.2
+    version: ^2.0.2
     repository: https://horizoncd.github.io/helm-charts
     condition: gitlab.enabled
+    tags:
+      - full
+
   - name: tektoncd
-    version: 2.1.1
+    version: ^2.1.1
     repository: https://horizoncd.github.io/helm-charts
     condition: tektoncd.enabled
+    tags:
+      - minimal
+      - full
+
   - name: minio
     version: 11.10.13
     repository: https://charts.bitnami.com/bitnami
     condition: minio.enabled
+    tags:
+      - minimal
+      - full
+
   - name: mysql
     version: 9.4.1
     repository: https://charts.bitnami.com/bitnami
     condition: mysql.enabled
+    tags:
+      - minimal
+      - full
+
   - name: chartmuseum
     version: 3.9.1
     repository: https://chartmuseum.github.io/charts
     condition: chartmuseum.enabled
+    tags:
+      - minimal
+      - full
+
   - name: grafana
     version: 6.26.5
     repository: https://grafana.github.io/helm-charts
     condition: grafana.enabled
+    tags:
+      - full
+
   - name: argo-cd
     version: 5.0.0
     repository: https://argoproj.github.io/argo-helm
     condition: argo-cd.enabled
+    tags:
+      - minimal
+      - full
+
+#  - name: redis-ha
+#    version: ^4.12.15
+#    repository: https://horizoncd.github.io/helm-charts
+#    condition: redis-ha.enabled
+#    tags:
+#      - minimal
+#      - full
+
   - name: harbor
     version: 1.6.3
     repository: https://helm.goharbor.io
     condition: harbor.enabled
+    tags:
+      - full
+
+#  - name: docker-registry
+#    version: ^2.2.2
+#    repository: https://horizoncd.github.io/helm-charts
+#    condition: docker-registry.enabled
+#    tags:
+#      - minimal
