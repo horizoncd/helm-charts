@@ -101,7 +101,7 @@ core:
     tag: v2.0.9
   args:
     loglevel:
-    gitOpsRepoDefaultBranch: master
+    gitOpsRepoDefaultBranch:
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2069,7 +2069,7 @@ job:
     tag: v2.0.9
   args:
     loglevel:
-    gitOpsRepoDefaultBranch: master
+    gitOpsRepoDefaultBranch:
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -3059,6 +3059,7 @@ build_schema:
       }
     }
 
+
 redis-ha:
   replicas: 1
   haproxy:
@@ -3066,7 +3067,6 @@ redis-ha:
   globalNamePrefix: horizon
 
 minio:
-  enabled: true
   ingress:
     enabled: true
     hostname: minio.h8r.site
@@ -3084,7 +3084,6 @@ minio:
           name: china
 
 mysql:
-  enabled: true
   auth:
     rootPassword: "horizon"
     createDatabase: true
@@ -3100,7 +3099,6 @@ mysql:
         memory: 2Gi
 
 gitlab:
-  enabled: true
   image: gitlab/gitlab-ce
   imageTag: "13.11.7-ce.0"
   ingress:
@@ -3123,7 +3121,6 @@ gitlab:
       memory: 4Gi
 
 chartmuseum:
-  enabled: true
   ingress:
     enabled: true
     hosts:
@@ -3144,7 +3141,6 @@ chartmuseum:
       AWS_SECRET_ACCESS_KEY: qOIh3Xt5jg
 
 grafana:
-  enabled: true
   defaultDashboardsEnabled: true
   adminPassword: admin
   ingress:
@@ -3164,7 +3160,6 @@ grafana:
       allow_embedding: true
 
 argo-cd:
-  enabled: true
   redis:
     enabled: false
   externalRedis:
@@ -3210,23 +3205,31 @@ argo-cd:
     enabled: false
 
 tektoncd:
-  enabled: true
   configDefaults:
     default-cloud-events-sink: http://horizon-core-cloudevent.horizoncd/apis/internal/cloudevents
   tektonDashboard:
     ingress:
       host: tekton.h8r.site
 
+docker-registry:
+  fullnameOverride: horizon-registry
+  service:
+    port: 443
+    tls:
+      enabled: true
+      commonName: horizon-registry.horizoncd.svc.cluster.local
+  ingress:
+    enabled: false
+
 harbor:
-  enabled: true
   expose:
     type: clusterIP
     tls:
       auto:
-        commonName: "harbor.horizoncd.svc.cluster.local"
+        commonName: "horizon-registry.horizoncd.svc.cluster.local"
     clusterIP:
-      name: harbor
-  externalURL: https://harbor.horizoncd.svc.cluster.local
+      name: horizon-registry
+  externalURL: https://horizon-registry.horizoncd.svc.cluster.local
   persistence:
     imageChartStorage:
       disableredirect: true
@@ -3243,8 +3246,8 @@ harbor:
     type: external
     external:
       addr: "horizon-redis-ha:6379"
+
   chartmuseum:
-    enabled: false
   core:
     replicas: 1
   jobservice:
@@ -3258,9 +3261,14 @@ harbor:
 
 tektonci-resources:
   auth:
-    dockerConfigJson: {    "auths":    {        "harbor.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
+    dockerConfigJson: {    "auths":    {        "horizon-registry.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
   gitRepos:
     ssh: []
     http: []
   extraVolumeMounts: []
 
+
+tags:
+  minimal: false
+  # default is minimal installation
+  full: true

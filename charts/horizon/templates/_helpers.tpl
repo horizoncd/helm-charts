@@ -110,3 +110,8 @@ Create the name of the service account to use
 {{- define "horizon.dbinit" -}}
   {{- printf "%s-dbinit" (include "horizon.fullname" .) -}}
 {{- end -}}
+
+{{- define "horizon.defaultBranch" -}}
+    {{- $version := (regexSplit "\\." .Values.gitlab.imageTag -1 | first | atoi) -}}
+    {{- if ge $version 14 -}} {{- print "main" }} {{- else -}} {{- print "master" -}} {{- end -}}
+{{- end -}}
