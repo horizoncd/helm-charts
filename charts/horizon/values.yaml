@@ -98,7 +98,7 @@ core:
   additionalLabels: {}
   image:
     repository: horizoncd/horizon-core
-    tag: v2.0.9
+    tag:
   args:
     loglevel:
     gitOpsRepoDefaultBranch:
@@ -2086,7 +2086,7 @@ swagger:
   replicas: 1
   image:
     repository: horizoncd/horizon-swagger
-    tag: v2.0.9
+    tag:
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -3159,6 +3159,8 @@ grafana:
     security:
       allow_embedding: true
 
+# username: admin
+# password: admin
 argo-cd:
   redis:
     enabled: false
