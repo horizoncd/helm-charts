@@ -1,16 +1,18 @@
 horizon:
   buildTask:
     image:
-      gitStep: horizoncd/kaniko-bash:v0.0.2
-      compileStep: horizoncd/kaniko-bash:v0.0.2
-      imageStep: horizoncd/kaniko-bash:v0.0.3
+      gitStep: horizoncd/base-bash:v1.0.0
+      compileStep: horizoncd/base-bash:v1.0.0
+      imageStep: horizoncd/podman-bash:v1.0.0
+    privileged:
+      imageStep: true
     timeout:
       gitStep: 5m
       compileStep:
       imageStep: 60m
   deployTask:
     image:
-      deployStep: horizoncd/kaniko-bash:v0.0.2
+      deployStep: horizoncd/base-bash:v1.0.0
     timeout:
       deployStep: 5m
     curlDeploy:
@@ -153,20 +155,17 @@ horizon:
 
       echo -e "\nstart building: $DOCKER_IMAGE"
 
-      # config.json need to be put under dir whose path is /kaniko, see https://github.com/GoogleContainerTools/kaniko/issues/450
-      # otherwise kaniko can't get the credential in multistage building
-      cp ~/.docker/config.json /kaniko/.docker/config.json
-      CMD_KANIKO="time /kaniko/executor --skip-tls-verify --context=${CONTEXT} \
-          --snapshotMode=redo \
-          --use-new-run \
-          --dockerfile="$DOCKERFILE_PATH" \
-          --build-arg APPLICATION="$APPLICATION" \
-          --build-arg CLUSTER="$CLUSTER" \
-          --build-arg ENVIRONMENT="$ENVIRONMENT" \
-          "$EXTRA_BUILD_ARGS" \
-          --destination=$DOCKER_IMAGE"
+      CMD_BUILD="time docker build --network=host --force-rm \
+        --build-arg APPLICATION="$APPLICATION" \
+        --build-arg CLUSTER="$CLUSTER" \
+        --build-arg ENVIRONMENT="$ENVIRONMENT" \
+        "$EXTRA_BUILD_ARGS" \
+        --file "$DOCKERFILE_PATH" \
+        -t "$DOCKER_IMAGE" "$CONTEXT" "
 
-      eval "$CMD_KANIKO" && exit 0
+      CMD_PUSH="time docker push "$DOCKER_IMAGE" && \
+        time docker rmi "$DOCKER_IMAGE" "
+      eval "$CMD_BUILD" && eval "$CMD_PUSH" && exit 0
       exit 1
     deploy: |
       #!/bin/bash
