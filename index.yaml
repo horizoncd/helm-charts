@@ -1,5 +1,23 @@
 apiVersion: v1
 entries:
+  docker-registry:
+  - apiVersion: v1
+    appVersion: 2.8.1
+    created: "2023-03-23T08:43:28.933272277Z"
+    description: A Helm chart for Docker Registry
+    digest: d00cba5a4c8cf132821fa68e0a99ceaf5440dac56e7ba3dba1f2511b1beccd76
+    home: https://hub.docker.com/_/registry/
+    icon: https://helm.twun.io/docker-registry.png
+    maintainers:
+    - email: devin@canterberry.cc
+      name: Devin Canterberry
+      url: https://canterberry.cc/
+    name: docker-registry
+    sources:
+    - https://github.com/docker/distribution-library-image
+    urls:
+    - https://github.com/horizoncd/helm-charts/releases/download/docker-registry-2.2.2/docker-registry-2.2.2.tgz
+    version: 2.2.2
   gitlab:
   - apiVersion: v2
     appVersion: 15.5.1
@@ -40,6 +58,73 @@ entries:
     - https://github.com/horizoncd/helm-charts/releases/download/gitlab-2.0.1/gitlab-2.0.1.tgz
     version: 2.0.1
   horizon:
+  - apiVersion: v2
+    appVersion: v2.0.9
+    created: "2023-03-23T08:43:29.16800662Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    - condition: gitlab.enabled
+      name: gitlab
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - full
+      version: ^2.0.2
+    - condition: tektoncd.enabled
+      name: tektoncd
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      - full
+      version: ^2.1.1
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - minimal
+      - full
+      version: 11.10.13
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - minimal
+      - full
+      version: 9.4.1
+    - condition: chartmuseum.enabled
+      name: chartmuseum
+      repository: https://chartmuseum.github.io/charts
+      tags:
+      - minimal
+      - full
+      version: 3.9.1
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      tags:
+      - full
+      version: 6.26.5
+    - condition: argo-cd.enabled
+      name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      tags:
+      - minimal
+      - full
+      version: 5.0.0
+    - condition: harbor.enabled
+      name: harbor
+      repository: https://helm.goharbor.io
+      tags:
+      - full
+      version: 1.6.3
+    description: A CICD DevOps Platform
+    digest: d584891cd976c7d61a4b34703b9cc42ee9a5b1a978b16b7f33bb92206f1bc783
+    name: horizon
+    type: application
+    urls:
+    - https://github.com/horizoncd/helm-charts/releases/download/horizon-2.1.5/horizon-2.1.5.tgz
+    version: 2.1.5
   - apiVersion: v2
     appVersion: v2.0.9
     created: "2023-03-14T06:07:41.721457706Z"
@@ -484,6 +569,32 @@ entries:
     urls:
     - https://github.com/horizoncd/helm-charts/releases/download/horizon-2.0.1/horizon-2.0.1.tgz
     version: 2.0.1
+  redis-ha:
+  - apiVersion: v1
+    appVersion: 6.0.7
+    created: "2023-03-23T08:43:29.309917627Z"
+    description: This Helm chart provides a highly available Redis implementation
+      with a master/slave configuration and uses Sentinel sidecars for failover management
+    digest: 7352242c9a35c1c85a95ae80b694ccb48aaf0eeb54d6c61faa30b11040b1c2b6
+    home: http://redis.io/
+    icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
+    keywords:
+    - redis
+    - keyvalue
+    - database
+    maintainers:
+    - email: salimsalaues@gmail.com
+      name: ssalaues
+    - email: aaron.layfield@gmail.com
+      name: dandydeveloper
+    name: redis-ha
+    sources:
+    - https://redis.io/download
+    - https://github.com/DandyDeveloper/charts/blob/master/charts/redis-ha
+    - https://github.com/oliver006/redis_exporter
+    urls:
+    - https://github.com/horizoncd/helm-charts/releases/download/redis-ha-4.12.15/redis-ha-4.12.15.tgz
+    version: 4.12.15
   tektoncd:
   - apiVersion: v2
     appVersion: 0.28.0
@@ -523,4 +634,4 @@ entries:
     urls:
     - https://github.com/horizoncd/helm-charts/releases/download/tektoncd-2.0.1/tektoncd-2.0.1.tgz
     version: 2.0.1
-generated: "2023-03-14T06:07:41.721497507Z"
+generated: "2023-03-23T08:43:29.309970327Z"
