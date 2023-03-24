@@ -1,3 +1,4 @@
+{{- if default .Values.tags.full .Values.swagger.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,4 @@ spec:
   selector:
 {{ include "horizon.matchLabels" . | indent 4 }}
     component: swagger
+{{- end -}}

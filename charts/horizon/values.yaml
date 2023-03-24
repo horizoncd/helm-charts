@@ -1,6 +1,12 @@
 config:
   serverConfig:
     port: 8080
+  jobConfig:
+    lockName: horizon-lock
+    lockNS: "{{ .Release.Namespace }}"
+    leaseDuration: 15
+    renewDeadline: 10
+    retryPeriod: 2
   cloudEventServerConfig:
     port: 8181
   pprofConfig:
@@ -2061,28 +2067,8 @@ core:
           "weekStart": ""
         }
 
-
-job:
-  additionalLabels: {}
-  image:
-    repository: horizoncd/horizon-job
-    tag: v2.0.9
-  args:
-    loglevel:
-    gitOpsRepoDefaultBranch:
-  securityContext:
-    runAsUser: 10001
-    fsGroup: 10001
-  serviceAccount:
-    create: true
-  resources: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  extraVolumeMounts: []
-  extraVolumes: []
-
 swagger:
+  enabled:
   replicas: 1
   image:
     repository: horizoncd/horizon-swagger
@@ -3271,6 +3257,6 @@ tektonci-resources:
 
 
 tags:
-  minimal: false
+  minimal: true
   # default is minimal installation
-  full: true
+  full: false
