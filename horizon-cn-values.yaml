@@ -139,3 +139,14 @@ minio:
     registry: "registry.cn-hangzhou.aliyuncs.com"
     repository: horizoncd/bitnami.minio
     tag: 2022.10.29-debian-11-r0
+
+tektonci-resources:
+  horizon:
+    buildTask:
+      image:
+        gitStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.0.0
+        compileStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.0.0
+        imageStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/podman-bash:v1.0.0
+    deployTask:
+      image:
+        deployStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.0.0
