@@ -155,16 +155,16 @@ horizon:
 
       echo -e "\nstart building: $DOCKER_IMAGE"
 
-      CMD_BUILD="time docker build --network=host --force-rm \
-        --build-arg APPLICATION="$APPLICATION" \
-        --build-arg CLUSTER="$CLUSTER" \
-        --build-arg ENVIRONMENT="$ENVIRONMENT" \
-        "$EXTRA_BUILD_ARGS" \
-        --file "$DOCKERFILE_PATH" \
-        -t "$DOCKER_IMAGE" "$CONTEXT" "
+      CMD_BUILD="time podman build --network=host --force-rm \
+        --build-arg APPLICATION=$APPLICATION \
+        --build-arg CLUSTER=$CLUSTER \
+        --build-arg ENVIRONMENT=$ENVIRONMENT \
+        $EXTRA_BUILD_ARGS \
+        --file $DOCKERFILE_PATH \
+        -t $DOCKER_IMAGE $CONTEXT"
 
-      CMD_PUSH="time docker push "$DOCKER_IMAGE" && \
-        time docker rmi "$DOCKER_IMAGE" "
+      CMD_PUSH="time podman push $DOCKER_IMAGE && \
+        time podman rmi $DOCKER_IMAGE"
       eval "$CMD_BUILD" && eval "$CMD_PUSH" && exit 0
       exit 1
     deploy: |
