@@ -33,7 +33,6 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: minio.enabled
     tags:
-      - minimal
       - full
 
   - name: mysql
