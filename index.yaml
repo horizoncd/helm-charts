@@ -59,6 +59,86 @@ entries:
     version: 2.0.1
   horizon:
   - apiVersion: v2
+    appVersion: v2.0.12
+    created: "2023-03-29T09:30:58.845075466Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    - condition: gitlab.enabled
+      name: gitlab
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      - full
+      version: ^2.0.2
+    - condition: tektoncd.enabled
+      name: tektoncd
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      - full
+      version: ^2.1.1
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - full
+      version: 11.10.13
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - minimal
+      - full
+      version: 9.4.1
+    - condition: chartmuseum.enabled
+      name: chartmuseum
+      repository: https://chartmuseum.github.io/charts
+      tags:
+      - minimal
+      - full
+      version: 3.9.1
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      tags:
+      - full
+      version: 6.26.5
+    - condition: argo-cd.enabled
+      name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      tags:
+      - minimal
+      - full
+      version: 5.0.0
+    - condition: redis-ha.enabled
+      name: redis-ha
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      - full
+      version: ^4.12.15
+    - condition: harbor.enabled
+      name: harbor
+      repository: https://helm.goharbor.io
+      tags:
+      - full
+      version: 1.6.3
+    - condition: docker-registry.enabled
+      name: docker-registry
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      version: ^2.2.2
+    description: A CICD DevOps Platform
+    digest: f94a3e5d3c58bb3489c321a79dfc98ea19c0fb23fefa7133d49042367632b1f4
+    name: horizon
+    type: application
+    urls:
+    - https://github.com/horizoncd/helm-charts/releases/download/horizon-2.1.8/horizon-2.1.8.tgz
+    version: 2.1.8
+  - apiVersion: v2
     appVersion: v2.0.11
     created: "2023-03-24T06:52:36.317766965Z"
     dependencies:
@@ -795,4 +875,4 @@ entries:
     urls:
     - https://github.com/horizoncd/helm-charts/releases/download/tektoncd-2.0.1/tektoncd-2.0.1.tgz
     version: 2.0.1
-generated: "2023-03-24T06:52:36.317855965Z"
+generated: "2023-03-29T09:30:58.845164066Z"
