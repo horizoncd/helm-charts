@@ -22,12 +22,18 @@ config:
   kubeconfig: ""
   redisConfig:
     protocol: tcp
-    address: 'horizon-redis-ha:6379'
+    address: 'horizon-redis-master:6379'
     password: ""
     db: 1
   sessionConfig:
     maxAge: 43200
-  gitRepos: []
+  gitRepos:
+    - kind: github
+      url: https://github.com
+      token:
+#   - kind: gitlab
+#     url: https://gitlab.com
+#     token: xxx
   gitopsRepoConfig:
     rootGroupPath: cloud-native
     url: "http://{{ .Release.Name }}-gitlab"
@@ -3046,12 +3052,12 @@ build_schema:
       }
     }
 
-
-redis-ha:
-  replicas: 1
-  haproxy:
+redis:
+  auth:
     enabled: false
-  globalNamePrefix: horizon
+  replica:
+    replicaCount: 0
+  fullnameOverride: horizon-redis
 
 minio:
   ingress:
@@ -3152,7 +3158,7 @@ argo-cd:
   redis:
     enabled: false
   externalRedis:
-    host: horizon-redis-ha
+    host: horizon-redis-master
     port: 6379
   server:
     extraArgs:
@@ -3234,7 +3240,7 @@ harbor:
   redis:
     type: external
     external:
-      addr: "horizon-redis-ha:6379"
+      addr: "horizon-redis-master:6379"
 
   chartmuseum:
   core:

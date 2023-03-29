@@ -1,3 +1,5 @@
+{{ $hasPSP := .Capabilities.APIVersions.Has "policy/v1bata1/PodSecurityPolicy"}}
+{{ if $hasPSP }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -11,3 +13,4 @@ rules:
       - podsecuritypolicies
     resourceNames:
       - tekton-resources
+{{ end }}

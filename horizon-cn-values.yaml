@@ -27,20 +27,31 @@ tektoncd:
   tektonTriggerInterceptor:
     image: registry.cn-hangzhou.aliyuncs.com/horizoncd/tektoncd.triggers.cmd.interceptors:v0.17.0
 
-redis-ha:
+redis:
   image:
-    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/redis
-    tag: 6.0.7-alpine
-  haproxy:
+    registry: registry.cn-hangzhou.aliyuncs.com
+    repository: horizoncd/bitnami.redis
+    tag: 7.0.10-debian-11-r2
+  sentinel:
     image:
-      repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/haproxy
-      tag: 2.0.4
-  sysctlImage:
-    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/busybox
-    tag: 1.31.1
-  exporter:
-    image: registry.cn-hangzhou.aliyuncs.com/horizoncd/oliver006.redis_exporter
-    tag: v1.15.1
+      registry: registry.cn-hangzhou.aliyuncs.com
+      repository: horizoncd/bitnami.redis-sentinel
+      tag: 7.0.10-debian-11-r1
+  metrics:
+    image:
+      registry: registry.cn-hangzhou.aliyuncs.com
+      repository: horizoncd/bitnami.redis-exporter
+      tag: 1.48.0-debian-11-r6
+  volumePermissions:
+    image:
+      registry: registry.cn-hangzhou.aliyuncs.com
+      repository: horizoncd/bitnami.bitnami-shell
+      tag: 11-debian-11-r99
+  sysctl:
+    image:
+      registry: registry.cn-hangzhou.aliyuncs.com
+      repository: horizoncd/bitnami.bitnami-shell
+      tag: 11-debian-11-r99
 
 # for horizon
 core:
