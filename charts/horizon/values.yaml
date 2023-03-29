@@ -27,7 +27,9 @@ config:
     db: 1
   sessionConfig:
     maxAge: 43200
-  gitRepos: []
+  gitRepos: [
+    "gitlab.h8r.site"
+  ]
   gitopsRepoConfig:
     rootGroupPath: cloud-native
     url: "http://{{ .Release.Name }}-gitlab"
