@@ -3259,7 +3259,14 @@ tektonci-resources:
     dockerConfigJson: {    "auths":    {        "horizon-registry.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
   gitRepos:
     ssh: []
+#      - url: gitlab.com
+#        privateKey: |
+#          -----BEGIN OPENSSH PRIVATE KEY-----
+#          ...
+#          -----END OPENSSH PRIVATE KEY-----
     http: []
+#      - url: github.com
+#        token: 1234567890
   extraVolumeMounts: []
 
 
