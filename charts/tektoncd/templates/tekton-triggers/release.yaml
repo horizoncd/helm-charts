@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+{{ $hasPSP := .Capabilities.APIVersions.Has "policy/v1bata1/PodSecurityPolicy"}}
+{{ if $hasPSP }}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
@@ -43,6 +45,7 @@ spec:
     ranges:
       - min: 1
         max: 65535
+{{ end }}
 
 ---
 # Copyright 2019 The Tekton Authors

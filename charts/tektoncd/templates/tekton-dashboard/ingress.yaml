@@ -1,4 +1,5 @@
-{{- if .Values.tektonDashboard.ingress.host }}
+{{ if .Values.tektonDashboard.enabled }}
+{{ if .Values.tektonDashboard.ingress.host }}
 kind: Ingress
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 metadata:
@@ -14,4 +15,5 @@ spec:
             pathType: ImplementationSpecific
             {{- end }}
             backend: {{- include "common.ingress.backend" (dict "serviceName" "tekton-dashboard" "servicePort" 9097 "context" $)  | nindent 14 }}
-{{- end }}
+{{ end }}
+{{ end }}

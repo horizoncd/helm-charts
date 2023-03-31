@@ -22,12 +22,18 @@ config:
   kubeconfig: ""
   redisConfig:
     protocol: tcp
-    address: 'horizon-redis-ha:6379'
+    address: 'horizon-redis-master:6379'
     password: ""
     db: 1
   sessionConfig:
     maxAge: 43200
-  gitRepos: []
+  gitRepos:
+    - kind: github
+      url: https://github.com
+      token:
+#   - kind: gitlab
+#     url: https://gitlab.com
+#     token: xxx
   gitopsRepoConfig:
     rootGroupPath: cloud-native
     url: "http://{{ .Release.Name }}-gitlab"
@@ -3046,12 +3052,15 @@ build_schema:
       }
     }
 
-
-redis-ha:
-  replicas: 1
-  haproxy:
+redis:
+  auth:
     enabled: false
-  globalNamePrefix: horizon
+  master:
+    readinessProbe:
+      initialDelaySeconds: 10
+  replica:
+    replicaCount: 0
+  fullnameOverride: horizon-redis
 
 minio:
   ingress:
@@ -3077,6 +3086,18 @@ mysql:
     database: "horizon"
   initdbScriptsConfigMap: horizon-dbinit
   primary:
+    livenessProbe:
+      periodSeconds: 5
+      timeoutSeconds: 1
+      failureThreshold: 5
+    readinessProbe:
+      periodSeconds: 5
+      timeoutSeconds: 1
+      failureThreshold: 3
+    startupProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 1
+      failureThreshold: 100
     resources:
       requests:
         cpu: 100m
@@ -3152,7 +3173,7 @@ argo-cd:
   redis:
     enabled: false
   externalRedis:
-    host: horizon-redis-ha
+    host: horizon-redis-master
     port: 6379
   server:
     extraArgs:
@@ -3197,6 +3218,7 @@ tektoncd:
   configDefaults:
     default-cloud-events-sink: http://horizon-core-cloudevent.horizoncd/apis/internal/cloudevents
   tektonDashboard:
+    enabled: false
     ingress:
       host: tekton.h8r.site
 
@@ -3234,7 +3256,7 @@ harbor:
   redis:
     type: external
     external:
-      addr: "horizon-redis-ha:6379"
+      addr: "horizon-redis-master:6379"
 
   chartmuseum:
   core:
@@ -3253,7 +3275,14 @@ tektonci-resources:
     dockerConfigJson: {    "auths":    {        "horizon-registry.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
   gitRepos:
     ssh: []
+#      - url: gitlab.com
+#        privateKey: |
+#          -----BEGIN OPENSSH PRIVATE KEY-----
+#          ...
+#          -----END OPENSSH PRIVATE KEY-----
     http: []
+#      - url: github.com
+#        token: 1234567890
   extraVolumeMounts: []
 
 

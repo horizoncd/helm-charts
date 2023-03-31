@@ -3,7 +3,7 @@ name: tektoncd
 
 type: application
 
-version: 2.1.1
+version: 2.1.2
 
 appVersion: 0.28.0
 

@@ -1,3 +1,4 @@
+{{ if .Values.tektonDashboard.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -454,3 +455,4 @@ subjects:
   - kind: ServiceAccount
     name: tekton-dashboard
     namespace: {{ .Release.Namespace }}
+{{ end }}
