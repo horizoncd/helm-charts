@@ -13,7 +13,7 @@ dependencies:
     version: 2.x.x
 
   - name: gitlab
-    version: ^2.0.2
+    version: 2.0.2
     repository: https://horizoncd.github.io/helm-charts
     condition: gitlab.enabled
     tags:
@@ -21,7 +21,7 @@ dependencies:
       - full
 
   - name: tektoncd
-    version: ^2.1.1
+    version: 2.1.2
     repository: https://horizoncd.github.io/helm-charts
     condition: tektoncd.enabled
     tags:
