@@ -73,16 +73,27 @@ spec:
           httpGet:
             path: /health
             port: {{ .Values.config.serverConfig.port }}
-          timeoutSeconds: 2
+          timeoutSeconds: 1
+          successThreshold: 1
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.config.serverConfig.port }}
+          timeoutSeconds: 1
+          successThreshold: 1
           periodSeconds: 10
           failureThreshold: 3
         startupProbe:
           httpGet:
             path: /health
             port: {{ .Values.config.serverConfig.port }}
-          timeoutSeconds: 2
-          periodSeconds: 10
-          failureThreshold: 20
+          timeoutSeconds: 1
+          successThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 1
+          failureThreshold: 40
         {{- if .Values.core.resources }}
         resources: {{ toYaml .Values.core.resources | nindent 10 }}
         {{- end }}

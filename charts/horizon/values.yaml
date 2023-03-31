@@ -3055,6 +3055,9 @@ build_schema:
 redis:
   auth:
     enabled: false
+  master:
+    readinessProbe:
+      initialDelaySeconds: 10
   replica:
     replicaCount: 0
   fullnameOverride: horizon-redis
@@ -3083,6 +3086,18 @@ mysql:
     database: "horizon"
   initdbScriptsConfigMap: horizon-dbinit
   primary:
+    livenessProbe:
+      periodSeconds: 5
+      timeoutSeconds: 1
+      failureThreshold: 5
+    readinessProbe:
+      periodSeconds: 5
+      timeoutSeconds: 1
+      failureThreshold: 3
+    startupProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 1
+      failureThreshold: 100
     resources:
       requests:
         cpu: 100m
@@ -3203,6 +3218,7 @@ tektoncd:
   configDefaults:
     default-cloud-events-sink: http://horizon-core-cloudevent.horizoncd/apis/internal/cloudevents
   tektonDashboard:
+    enabled: false
     ingress:
       host: tekton.h8r.site
 

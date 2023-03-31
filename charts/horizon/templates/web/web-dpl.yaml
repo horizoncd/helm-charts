@@ -26,13 +26,13 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.web.port }}
-            initialDelaySeconds: 300
+            initialDelaySeconds: 3
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.web.port }}
-            initialDelaySeconds: 1
+            initialDelaySeconds: 3
             periodSeconds: 10
           volumeMounts:
             - name: nginx-config
