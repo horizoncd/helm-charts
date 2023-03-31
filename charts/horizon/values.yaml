@@ -3149,6 +3149,8 @@ chartmuseum:
       AWS_SECRET_ACCESS_KEY: qOIh3Xt5jg
 
 grafana:
+  rbac:
+    pspEnabled: false
   defaultDashboardsEnabled: true
   adminPassword: admin
   ingress:
