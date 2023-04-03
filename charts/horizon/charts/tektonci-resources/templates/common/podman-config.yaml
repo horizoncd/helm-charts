@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: podman-config
+data:
+  containers.conf:
+{{ tpl (toYaml .Values.podmanConfig) . | indent 4 }}
