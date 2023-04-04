@@ -1,3 +1,14 @@
+create table if not exists tb_collection
+(
+    id            bigint(20) unsigned auto_increment
+        primary key,
+    resource_id   bigint(20) unsigned default 0         not null comment 'refer to resource id',
+    resource_type varchar(128)        default 'clusters' not null  comment 'resource type, cluster or application',
+    user_id       bigint(20) unsigned default 0         not null comment 'refer to user id',
+    constraint uk_resource_user
+        unique (resource_id, user_id, resource_type)
+);
+
 create table if not exists tb_application
 (
     id               bigint unsigned auto_increment
