@@ -324,6 +324,12 @@ horizon:
       deploy
 auth:
   dockerConfigJson: "{}"
+podmanConfig: |
+  [registries.search]
+  unqualified-search-registries = ['docker.io']
+  registries = ['docker.io']
+  [registries.insecure]
+  registries = ['horizon-registry.horizoncd.svc.cluster.local']
 gitRepos:
   ssh: []
 #    - url: gitlab.com

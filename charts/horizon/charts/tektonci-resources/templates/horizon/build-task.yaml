@@ -35,7 +35,9 @@ spec:
       volumeMounts:
         - name: git-token
           mountPath: /workspace/git-token
+{{- if .Values.extraVolumeMounts -}}
 {{- include "tektonci.extraVolumeMounts" . | indent 8 }}
+{{- end }}
     - name: compile
       workingDir: /workspace/git-source
       {{- with .Values.horizon.buildTask.timeout.compileStep }}
@@ -62,12 +64,22 @@ spec:
       {{- end }}
       script:
       {{ toYaml (tpl .Values.horizon.script.image .) | nindent 8 }}
-      {{ if .Values.extraVolumeMounts -}}
       volumeMounts:
+        - name: podman-config
+          mountPath: /etc/containers/registries.conf
+          subPath: containers.conf
+          readOnly: true
+{{- if .Values.extraVolumeMounts -}}
 {{- include "tektonci.extraVolumeMounts" . | indent 8 }}
-      {{- end }}
+{{- end }}
   volumes:
     - name: git-token
       secret:
         secretName: git-token
+    - name: podman-config
+      configMap:
+          name: podman-config
+          items:
+            - key: containers.conf
+              path: containers.conf
 {{- include "tektonci.extraVolumes" . | indent 4 }}
