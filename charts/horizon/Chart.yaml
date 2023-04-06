@@ -21,7 +21,7 @@ dependencies:
       - full
 
   - name: tektoncd
-    version: 2.1.2
+    version: 2.1.1
     repository: https://horizoncd.github.io/helm-charts
     condition: tektoncd.enabled
     tags:
