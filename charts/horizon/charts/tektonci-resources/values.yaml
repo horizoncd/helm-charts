@@ -323,7 +323,7 @@ horizon:
       }
       deploy
 auth:
-  dockerConfigJson: "{}"
+  dockerConfigJson: {}
 podmanConfig: |
   [registries.search]
   unqualified-search-registries = ['docker.io']
