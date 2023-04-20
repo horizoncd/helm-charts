@@ -2097,7 +2097,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.1.3
+    tag: v2.1.6
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2175,6 +2175,7 @@ roles:
             - clusters/deploy
             - clusters/diffs
             - clusters/next
+            - clusters/action
             - clusters/restart
             - clusters/rollback
             - clusters/status
@@ -2205,6 +2206,7 @@ roles:
             - clusters/resume
             - clusters/containers
             - clusters/webhooks
+            - clusters/favorite
           verbs:
             - "*"
           scopes:
@@ -2310,6 +2312,7 @@ roles:
             - clusters/deploy
             - clusters/diffs
             - clusters/next
+            - clusters/action
             - clusters/restart
             - clusters/rollback
             - clusters/status
@@ -2339,6 +2342,7 @@ roles:
             - clusters/pause
             - clusters/resume
             - clusters/containers
+            - clusters/favorite
           verbs:
             - create
             - get
@@ -2496,6 +2500,7 @@ roles:
             - clusters/deploy
             - clusters/diffs
             - clusters/next
+            - clusters/action
             - clusters/restart
             - clusters/rollback
             - clusters/status
@@ -2529,6 +2534,7 @@ roles:
             - clusters/accesstokens
             - templates/members
             - templatereleases/members
+            - clusters/favorite
           verbs:
             - create
             - get
@@ -2653,9 +2659,16 @@ roles:
             - "*"
           nonResourceURLs:
             - "*"
-            -
-
-
+        - apiGroups:
+            - core
+          resources:
+            - clusters/favorite
+          verbs:
+            - create
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
 
 scopes:
   defaultScope:
@@ -2791,6 +2804,7 @@ scopes:
             - clusters/deploy
             - clusters/diffs
             - clusters/next
+            - clusters/action
             - clusters/restart
             - clusters/rollback
             - clusters/status
@@ -2820,6 +2834,7 @@ scopes:
             - clusters/buildstatus
             - clusters/step
             - clusters/resourcetree
+            - clusters/favorite
           verbs:
             - "*"
           scopes:
