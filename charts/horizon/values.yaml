@@ -38,6 +38,8 @@ config:
     rootGroupPath: cloud-native
     url: "http://{{ .Release.Name }}-gitlab"
     token: horizon-access-token
+    defaultBranch: '{{ include "horizon.defaultBranch" . }}'
+    defaultVisibility: private
   templateRepo:
     kind: chartmuseum
     host: "http://horizon-chartmuseum:8080"
@@ -114,7 +116,6 @@ core:
     tag:
   args:
     loglevel:
-    gitOpsRepoDefaultBranch:
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2097,7 +2098,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.1.6
+    tag: v2.1.7
   securityContext:
     runAsUser: 10001
     fsGroup: 10001

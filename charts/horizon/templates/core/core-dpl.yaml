@@ -57,7 +57,6 @@ spec:
         - --environment=production
         - --scopes=/home/appops/scopes
         - --loglevel={{ default "info" .Values.core.args.loglevel }}
-        - --gitOpsRepoDefaultBranch={{ default ( include "horizon.defaultBranch" . ) .Values.core.args.gitOpsRepoDefaultBranch }}
         - --buildjsonschema=/home/appops/buildjsonschema
         - --builduischema=/home/appops/builduischema
         env:
