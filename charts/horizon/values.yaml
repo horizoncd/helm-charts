@@ -68,7 +68,7 @@ config:
         skipVerify: true
         s3ForcePathStyle: true
   grafanaConfig:
-    host: "http://grafana.h8r.site"
+    host: "{{ if not .Values.tags.minimal }}http://grafana.h8r.site{{ end }}"
     namespace: "{{ .Release.Namespace }}"
     dashboards:
       # label that the configmaps with dashboards are marked with
