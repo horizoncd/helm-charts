@@ -2098,7 +2098,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.1.9
+    tag: v2.1.10
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2137,6 +2137,7 @@ roles:
             - applications/subresourcetags
             - applications/pipelinestats
             - applications/webhooks
+            - applications/tags
           verbs:
             - "*"
           scopes:
@@ -2268,6 +2269,17 @@ roles:
             - "*"
           nonResourceURLs:
             - "*"
+        - apiGroups:
+            - core
+          resources:
+            - metatags
+            - metagtagkeys
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
     - name: maintainer
       desc: maintainer为组/应用/集群的管理者，拥有除删除资源之外的其他权限，并且也可以进行成员管理
       rules:
@@ -2283,6 +2295,7 @@ roles:
             - applications/selectableregions
             - applications/subresourcetags
             - applications/pipelinestats
+            - applications/tags
           verbs:
             - create
             - get
@@ -2428,6 +2441,17 @@ roles:
             - "*"
           nonResourceURLs:
             - "*"
+        - apiGroups:
+            - core
+          resources:
+            - metatags
+            - metagtagkeys
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
     - name: tagger
       desc: tagger为集群的标签管理人员，目前仅提供给pylon2进行批量调整jvm使用。
       rules:
@@ -2458,6 +2482,7 @@ roles:
             - applications/subresourcetags
             - applications/pipelinestats
             - applications/accesstokens
+            - applications/tags
           verbs:
             - create
             - get
@@ -2582,6 +2607,17 @@ roles:
             - "*"
           nonResourceURLs:
             - "*"
+        - apiGroups:
+            - core
+          resources:
+            - metatags
+            - metagtagkeys
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
     - name: guest
       desc: guest为只读人员，拥有组/应用/项目的只读权限，以及测试环境集群创建的权限
       rules:
@@ -2607,6 +2643,7 @@ roles:
             - applications/selectableregions
             - applications/pipelinestats
             - applications/subresourcetags
+            - applications/tags
             - clusters
             - clusters/diffs
             - clusters/status
@@ -2670,6 +2707,17 @@ roles:
             - "*"
           nonResourceURLs:
             - "*"
+        - apiGroups:
+            - core
+          resources:
+            - metatags
+            - metagtagkeys
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
 
 scopes:
   defaultScope:
@@ -2723,6 +2771,7 @@ scopes:
             - applications/subresourcetags
             - applications/selectableregions
             - applications/envtemplates
+            - applications/tags
             - environments
             - environments/regions
             - templates
@@ -2750,6 +2799,7 @@ scopes:
             - applications/transfer
             - applications/selectableregions
             - applications/envtemplates
+            - applications/tags
             - environments
             - environments/regions
             - templates
