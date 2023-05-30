@@ -33,12 +33,20 @@ spec:
       type: string
     - name: requestID
       type: string
+    - name: template
+      type: string
+    - name: action
+      type: string
   workspaces:
     - name: buildinfo
   tasks:
     - name: build
       taskRef:
         name: horizon-build
+      # when:
+      #   - input: "$(params.action)"
+      #     operator: in
+      #     values: ["builddeploy"]
       params:
         - name: token
           value: $(params.token)
@@ -68,12 +76,16 @@ spec:
           value: $(params.pipelinerunID)
         - name: requestID
           value: $(params.requestID)
+        - name: template
+          value: $(params.template)
+        - name: action
+          value: $(params.action)
       workspaces:
         - name: buildinfo
           workspace: buildinfo
-    - name: deploy
+    - name: check
       taskRef:
-        name: horizon-deploy
+        name: horizon-check
       runAfter:
         - build
       params:
@@ -105,3 +117,45 @@ spec:
           value: $(params.pipelinerunID)
         - name: requestID
           value: $(params.requestID)
+        - name: template
+          value: $(params.template)
+        - name: action
+          value: $(params.action)
+    - name: deploy
+      taskRef:
+        name: horizon-deploy
+      runAfter:
+        - check
+      params:
+        - name: token
+          value: $(params.token)
+        - name: application
+          value: $(params.application)
+        - name: cluster
+          value: $(params.cluster)
+        - name: clusterID
+          value: $(params.clusterID)
+        - name: environment
+          value: $(params.environment)
+        - name: gitRepositoryUrl
+          value: $(params.gitRepositoryUrl)
+        - name: gitSubfolder
+          value: $(params.gitSubfolder)
+        - name: gitCommit
+          value: $(params.gitCommit)
+        - name: gitBranch
+          value: $(params.gitBranch)
+        - name: gitTag
+          value: $(params.gitTag)
+        - name: pipelineJSONBlob
+          value: $(params.pipelineJSONBlob)
+        - name: imageURL
+          value: $(params.imageURL)
+        - name: pipelinerunID
+          value: $(params.pipelinerunID)
+        - name: requestID
+          value: $(params.requestID)
+        - name: template
+          value: $(params.template)
+        - name: action
+          value: $(params.action)

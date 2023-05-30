@@ -10,6 +10,11 @@ horizon:
       gitStep: 5m
       compileStep:
       imageStep: 60m
+  checkTask:
+    image:
+      checkStep: horizoncd/base-bash:v1.1.0
+    timeout:
+      checkStep: 2m
   deployTask:
     image:
       deployStep: horizoncd/base-bash:v1.0.0
@@ -167,6 +172,48 @@ horizon:
         time podman rmi $DOCKER_IMAGE"
       eval "$CMD_BUILD" && eval "$CMD_PUSH" && exit 0
       exit 1
+    check: |
+      #!/bin/bash
+      set -e
+
+      export BUILD_CATEGORY="$(jq -r '.buildType//empty'<<<"$PIPELINE_JSON_BLOB")"
+      export ACTION="$(params.action)"
+      export GIT_REPOSITORY_URL="$(params.gitRepositoryUrl)"
+      export IMAGE_URL="$(params.imageURL)"
+
+      is_json(){
+        local INPUT="$1"
+        [[ ! -z "$(jq -c "objects"<<<"$INPUT" 2>/dev/null)" ]] && return 0 || return 1
+      }
+
+      check_non_root() {
+        local INPUT="$1"
+        local USER=$(echo "$INPUT" | jq -r '.config.User')
+        if [[ "$USER" == "0" || "$USER" == "root" ]]; then
+          echo "Error: The image runs as root, which is not allowed."
+          exit 1
+        else
+          echo "The image runs as non-root."
+        fi
+      }
+
+      check_image() {
+        local image="$1"
+        local config=$(crane config $image --insecure 2>/dev/null)
+        if is_json "$config"
+        then
+          check_non_root "$config"
+        else
+          echo "Error: The image $image is not found."
+          exit 1
+        fi
+      }
+
+      if [[ "$ACTION" == "deploy" ]] && [[ -z "$GIT_REPOSITORY_URL" ]]
+      then
+        check_image "$IMAGE_URL"
+      fi
+      echo "image check passed!"
     deploy: |
       #!/bin/bash
       set -eE
