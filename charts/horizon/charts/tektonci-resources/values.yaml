@@ -33,6 +33,13 @@ horizon:
     git: |
       #!/bin/bash
       set -e
+
+      export ACTION="$(params.action)"
+      if [[ "$ACTION" == "deploy" ]]
+      then
+        exit 0
+      fi
+
       export SOURCE_DIR="/workspace/git-source"
       export GIT_TOKENS_DIR="/workspace/git-token"
       export GIT_REPOSITORY_URL="$(params.gitRepositoryUrl)"
@@ -75,6 +82,13 @@ horizon:
     compile: |
       #!/bin/bash
       set -e
+
+      export ACTION="$(params.action)"
+      if [[ "$ACTION" == "deploy" ]]
+      then
+        exit 0
+      fi
+
       export GIT_SUBFOLDER="$(params.gitSubfolder)"
       export PIPELINE_JSON_BLOB='$(params.pipelineJSONBlob)'
       export DOCKERFILE_BUILD="dockerfile"
@@ -142,6 +156,13 @@ horizon:
     image: |
       #!/bin/bash
       set -e
+
+      export ACTION="$(params.action)"
+      if [[ "$ACTION" == "deploy" ]]
+      then
+        exit 0
+      fi
+
       export BUILD_TYPE="$(cat $(workspaces.buildinfo.path)/build-type)"
 
       export APPLICATION="$(params.application)"
@@ -194,6 +215,8 @@ horizon:
           exit 1
         else
           echo "The image runs as non-root."
+          echo "image check passed!"
+          exit 0
         fi
       }
 
@@ -213,7 +236,7 @@ horizon:
       then
         check_image "$IMAGE_URL"
       fi
-      echo "image check passed!"
+      echo "image check skipped."
     deploy: |
       #!/bin/bash
       set -eE
