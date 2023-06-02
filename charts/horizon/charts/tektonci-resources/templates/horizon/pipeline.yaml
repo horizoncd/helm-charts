@@ -43,10 +43,6 @@ spec:
     - name: build
       taskRef:
         name: horizon-build
-      # when:
-      #   - input: "$(params.action)"
-      #     operator: in
-      #     values: ["builddeploy"]
       params:
         - name: token
           value: $(params.token)
