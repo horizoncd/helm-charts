@@ -1,8 +1,8 @@
-# deploy task
+# check task
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: horizon-deploy
+  name: horizon-check
 spec:
   params:
     - name: token
@@ -22,22 +22,13 @@ spec:
     - name: template
     - name: action
   steps:
-    - name: deploy
-      image: {{ .Values.horizon.deployTask.image.deployStep }}
-      {{- with .Values.horizon.deployTask.timeout.deployStep }}
+    - name: check
+      image: {{ .Values.horizon.checkTask.image.checkStep }}
+      {{- with .Values.horizon.checkTask.timeout.checkStep }}
       timeout: {{.}}
       {{- end}}
-      env:
-        - name: HORIZON_API_URL
-          value: {{ .Values.horizon.deployTask.horizonApiUrl }}
-        - name: CURL_CONNECT_TIME
-          value: "{{ .Values.horizon.deployTask.curlDeploy.connectTime }}"
-        - name: CURL_MAX_TIME
-          value: "{{ .Values.horizon.deployTask.curlDeploy.maxTime }}"
-        - name: CURL_RETRY
-          value: "{{ .Values.horizon.deployTask.curlDeploy.retry }}"
       script:
-      {{ toYaml (tpl .Values.horizon.script.deploy .) | nindent 8 }}
+      {{ toYaml (tpl .Values.horizon.script.check .) | nindent 8 }}
       {{ if .Values.extraVolumeMounts -}}
       volumeMounts:
 {{- include "tektonci.extraVolumeMounts" . | indent 8 }}

@@ -42,3 +42,5 @@ spec:
       value: $(header.X-Request-Id)
     - name: template
       value: $(body.template)
+    - name: action
+      value: $(body.action)

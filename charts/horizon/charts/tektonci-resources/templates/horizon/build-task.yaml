@@ -19,6 +19,8 @@ spec:
     - name: imageURL
     - name: pipelinerunID
     - name: requestID
+    - name: template
+    - name: action
   workspaces:
     - name: buildinfo
   results:
