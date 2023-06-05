@@ -1,3 +1,17 @@
+CREATE TABLE if not exists `tb_metatag`
+(
+    `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+    `tag_key`     varchar(64)  NOT NULL DEFAULT '' comment 'key of the metatag',
+    `tag_value`   varchar(128) NOT NULL DEFAULT '' comment 'value of the metatag',
+    `description` varchar(64)  NOT NULL DEFAULT '' comment 'description',
+    `created_at`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_key_value` (`tag_key`, `tag_value`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8mb4;
+
 create table if not exists tb_collection
 (
     id            bigint(20) unsigned auto_increment
@@ -24,6 +38,7 @@ create table if not exists tb_application
     git_ref_type     varchar(64)                               null,
     template         varchar(64)                               not null comment 'template name',
     template_release varchar(64)                               not null comment 'template release',
+    image            varchar(256)    default                   null comment 'artifact image url for the application',
     created_at       datetime        default CURRENT_TIMESTAMP not null,
     updated_at       datetime        default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
     deleted_ts       bigint          default 0                 null comment 'deleted timestamp, 0 means not deleted',
@@ -64,6 +79,7 @@ create table if not exists tb_cluster
     git_ref_type     varchar(64)                               null,
     template         varchar(64)                               not null comment 'template name',
     template_release varchar(64)                               not null comment 'template release',
+    image            varchar(256)    default                   null comment 'artifact image url for the application',
     created_at       datetime        default CURRENT_TIMESTAMP not null,
     updated_at       datetime        default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
     deleted_ts       bigint          default 0                 null comment 'deleted timestamp, 0 means not deleted',
