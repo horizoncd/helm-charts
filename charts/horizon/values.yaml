@@ -113,7 +113,7 @@ core:
   additionalLabels: {}
   image:
     repository: horizoncd/horizon-core
-    tag:
+    tag: 
   args:
     loglevel:
   securityContext:
@@ -2098,7 +2098,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.1.12
+    tag: 
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
