@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag | default .Chart.AppVersion }}
+          image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
           ports:
             - containerPort: {{ .Values.web.port }}
           livenessProbe:
