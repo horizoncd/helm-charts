@@ -2098,7 +2098,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: 
+    tag: v2.2.0
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
