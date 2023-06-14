@@ -1,3 +1,14 @@
+CREATE TABLE if not exists `tb_collection` (
+  `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `resource_id`   bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'refer to resource id',
+  `resource_type` varchar(128)        NOT NULL DEFAULT 'clusters' COMMENT 'resource type, cluster or application',
+  `user_id`       bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'refer to user id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_resource_user` (`resource_id`,`user_id`,`resource_type`)
+) ENGINE=InnoDB
+  AUTO_INCREMENT=1
+  DEFAULT CHARSET=utf8mb4
+
 CREATE TABLE if not exists `tb_metatag`
 (
     `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT,
