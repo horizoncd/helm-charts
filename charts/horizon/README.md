@@ -214,7 +214,7 @@ minio:
   enabled: true
   ingress:
     enabled: true
-    hostname: minio.h8r.site
+    hostname: minio.localtest.me
   persistence:
     enabled: true
   defaultBuckets: horizon
@@ -248,13 +248,13 @@ gitlab:
   ingress:
     enabled: true
     hosts:
-      - gitlab.h8r.site
+      - gitlab.localtest.me
   persistence:
     enabled: true
   config:
     GITLAB_ROOT_PASSWORD: root1234
     GITLAB_ROOT_ACCESS_TOKEN: horizon-access-token
-    GITLAB_HOST: gitlab.h8r.site
+    GITLAB_HOST: gitlab.localtest.me
     GITLAB_TIMEZONE: "Asia/Shanghai"
   resources:
     requests:
@@ -280,7 +280,7 @@ chartmuseum:
   ingress:
     enabled: true
     hosts:
-      - name: chartmuseum.h8r.site
+      - name: chartmuseum.localtest.me
   env:
     open:
       # storage backend, can be one of: local, alibaba, amazon, google, microsoft, oracle
@@ -407,7 +407,7 @@ grafana:
   ingress:
     enabled: true
     hosts:
-      - grafana.h8r.site
+      - grafana.localtest.me
     path: /
   sidecar:
     dashboards:
