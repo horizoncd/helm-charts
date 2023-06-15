@@ -158,6 +158,7 @@ create table if not exists tb_event
     resource_type varchar(256)    default ''                not null comment 'currently support: groups, applications, clusters',
     resource_id   varchar(256)    default ''                not null comment 'id of resource',
     event_type    varchar(256)    default ''                not null comment 'type of event',
+    extra         varchar(1024)   default ''                not null comment 'extra info',
     created_at    datetime        default CURRENT_TIMESTAMP not null,
     created_by    bigint unsigned default 0                 not null
 );
