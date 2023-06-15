@@ -1,37 +1,25 @@
-CREATE TABLE if not exists `tb_collection` (
-  `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `resource_id`   bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'refer to resource id',
-  `resource_type` varchar(128)        NOT NULL DEFAULT 'clusters' COMMENT 'resource type, cluster or application',
-  `user_id`       bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'refer to user id',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_resource_user` (`resource_id`,`user_id`,`resource_type`)
-) ENGINE=InnoDB
-  AUTO_INCREMENT=1
-  DEFAULT CHARSET=utf8mb4
-
-CREATE TABLE if not exists `tb_metatag`
-(
-    `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-    `tag_key`     varchar(64)  NOT NULL DEFAULT '' comment 'key of the metatag',
-    `tag_value`   varchar(128) NOT NULL DEFAULT '' comment 'value of the metatag',
-    `description` varchar(64)  NOT NULL DEFAULT '' comment 'description',
-    `created_at`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_key_value` (`tag_key`, `tag_value`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-  DEFAULT CHARSET = utf8mb4;
-
 create table if not exists tb_collection
 (
-    id            bigint(20) unsigned auto_increment
+  id            bigint(20) unsigned NOT NULL AUTO_INCREMENT
+    primary key,
+  resource_id   bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'refer to resource id',
+  resource_type varchar(128)        NOT NULL DEFAULT 'clusters' COMMENT 'resource type, cluster or application',
+  user_id       bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'refer to user id',
+  constraint uk_resource_user 
+        unique (resource_id,user_id,resource_type)
+);
+
+create table if not exists tb_metatag
+(
+    id          bigint(20) unsigned NOT NULL AUTO_INCREMENT
         primary key,
-    resource_id   bigint(20) unsigned default 0         not null comment 'refer to resource id',
-    resource_type varchar(128)        default 'clusters' not null  comment 'resource type, cluster or application',
-    user_id       bigint(20) unsigned default 0         not null comment 'refer to user id',
-    constraint uk_resource_user
-        unique (resource_id, user_id, resource_type)
+    tag_key     varchar(64)  NOT NULL DEFAULT '' comment 'key of the metatag',
+    tag_value   varchar(128) NOT NULL DEFAULT '' comment 'value of the metatag',
+    description varchar(64)  NOT NULL DEFAULT '' comment 'description',
+    created_at  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    constraint idx_key_value 
+        unique (tag_key, tag_value)
 );
 
 create table if not exists tb_application

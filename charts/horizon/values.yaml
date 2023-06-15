@@ -67,8 +67,14 @@ config:
         disableSSL: true
         skipVerify: true
         s3ForcePathStyle: true
+  clean:
+    batch: 160
+    timeToRun: 0 0 2 * * ?
+    eventCleanRules: []
+  kubernetesEvent:
+    rules: []
   grafanaConfig:
-    host: "{{ if not .Values.tags.minimal }}http://grafana.h8r.site{{ end }}"
+    host: "{{ if not .Values.tags.minimal }}http://grafana.localtest.me{{ end }}"
     namespace: "{{ .Release.Namespace }}"
     dashboards:
       # label that the configmaps with dashboards are marked with
@@ -105,7 +111,7 @@ ingress:
   enabled: true
   pathType: ImplementationSpecific
   hosts:
-    - horizon.h8r.site
+    - horizon.localtest.me
   tls: []
 
 core:
@@ -3131,7 +3137,7 @@ redis:
 minio:
   ingress:
     enabled: true
-    hostname: minio.h8r.site
+    hostname: minio.localtest.me
   persistence:
     enabled: true
   defaultBuckets: horizon
@@ -3178,13 +3184,13 @@ gitlab:
   ingress:
     enabled: true
     hosts:
-      - gitlab.h8r.site
+      - gitlab.localtest.me
   persistence:
     enabled: true
   config:
     GITLAB_ROOT_PASSWORD: root1234
     GITLAB_ROOT_ACCESS_TOKEN: horizon-access-token
-    GITLAB_HOST: gitlab.h8r.site
+    GITLAB_HOST: gitlab.localtest.me
     GITLAB_TIMEZONE: "Asia/Shanghai"
   resources:
     requests:
@@ -3198,7 +3204,7 @@ chartmuseum:
   ingress:
     enabled: true
     hosts:
-      - name: chartmuseum.h8r.site
+      - name: chartmuseum.localtest.me
   env:
     open:
       # storage backend, can be one of: local, alibaba, amazon, google, microsoft, oracle
@@ -3222,7 +3228,7 @@ grafana:
   ingress:
     enabled: true
     hosts:
-      - grafana.h8r.site
+      - grafana.localtest.me
     path: /
   sidecar:
     dashboards:
@@ -3249,7 +3255,7 @@ argo-cd:
     ingress:
       enabled: true
       hosts:
-        - argocd.h8r.site
+        - argocd.localtest.me
     config:
       accounts.robot: login,apiKey
     rbacConfig:
@@ -3288,7 +3294,7 @@ tektoncd:
   tektonDashboard:
     enabled: false
     ingress:
-      host: tekton.h8r.site
+      host: tekton.localtest.me
 
 docker-registry:
   fullnameOverride: horizon-registry
