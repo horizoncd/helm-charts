@@ -202,6 +202,11 @@ horizon:
       export GIT_REPOSITORY_URL="$(params.gitRepositoryUrl)"
       export IMAGE_URL="$(params.imageURL)"
 
+      if [ -z $IMAGE_URL ]; then
+        echo "there's no image found, skipping..."
+        exit 0
+      fi
+
       is_json(){
         local INPUT="$1"
         [[ ! -z "$(jq -c "objects"<<<"$INPUT" 2>/dev/null)" ]] && return 0 || return 1
