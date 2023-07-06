@@ -483,6 +483,7 @@ create table if not exists tb_template
     only_admin  tinyint(1)      default 0                 not null,
     only_owner  tinyint(1)      default 0                 not null comment 'only owner could access',
     without_ci  tinyint(1)      default 0                 not null comment 'without_ci configuration, 0 means with ci',
+    type        varchar(256)    default 'language'        not null,
     constraint idx_name
         unique (name)
 );
