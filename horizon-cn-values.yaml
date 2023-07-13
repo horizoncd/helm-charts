@@ -139,6 +139,12 @@ harbor:
       repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.harbor-exporter
       tag: v2.2.3
 
+  database:
+    internal:
+      image:
+        repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/goharbor.harbor-db
+        tag: v2.2.3
+
 mysql:
   image:
     registry: "registry.cn-hangzhou.aliyuncs.com"
