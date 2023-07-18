@@ -23,7 +23,7 @@ spec:
     - bindings:
       - ref: horizon-taskbinding
       template:
-        name: horizon-triggertemplate
+        ref: horizon-triggertemplate
       interceptors:
         - cel:
             overlays:
