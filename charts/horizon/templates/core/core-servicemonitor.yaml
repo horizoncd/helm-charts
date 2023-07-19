@@ -1,4 +1,4 @@
-{{- if .Values.core.monitor.enabled }}
+{{- if .Values.core.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -8,9 +8,18 @@ metadata:
     component: core
 spec:
   endpoints:
-    - interval: 30s
-      path: /metrics
-      port: http
+    - port: http
+      path: {{ .Values.core.serviceMonitor.path }}
+      {{- with .Values.core.serviceMonitor.interval }}
+      interval: {{ . }}
+      {{- end }}
+      {{- with .Values.core.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ . }}
+      {{- end }}
+      {{- if .Values.core.serviceMonitor.relabelings }}
+      relabelings:
+      {{- toYaml .Values.core.serviceMonitor.relabelings | nindent 4 }}
+      {{- end }}
   selector:
     matchLabels:
 {{ include "horizon.labels" . | indent 6 }}

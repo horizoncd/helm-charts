@@ -119,7 +119,7 @@ core:
   additionalLabels: {}
   image:
     repository: horizoncd/horizon-core
-    tag: 
+    tag:
   args:
     loglevel:
   securityContext:
@@ -142,8 +142,13 @@ core:
   envs: {}
   extraVolumeMounts: []
   extraVolumes: []
-  monitor:
+  serviceMonitor:
     enabled: false
+    path: /metrics
+    interval: 1m
+    scrapeTimeout: 30s
+    relabelings: []
+
   grafanaDashboards:
     - name: pod
       value: |
