@@ -4,8 +4,8 @@ description: A CICD DevOps Platform
 
 type: application
 
-version: 2.2.7
-appVersion: v2.4.2
+version: 2.2.8
+appVersion: v2.4.3
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
