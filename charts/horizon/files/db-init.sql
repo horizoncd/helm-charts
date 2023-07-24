@@ -528,6 +528,7 @@ create table if not exists tb_token
     user_id      bigint unsigned default 0                 not null,
     name         varchar(64)     default ''                not null,
     created_by   bigint unsigned default 0                 not null,
+    ref_id       bigint unsigned                           null comment 'id associated to the access token for refresh token',
     constraint idx_code
         unique (code)
 );
