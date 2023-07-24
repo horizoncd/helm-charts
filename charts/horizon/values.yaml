@@ -97,6 +97,7 @@ config:
     oauthHTMLLocation: "/home/appops/authhtml"
     authorizeCodeExpireIn: 10m
     accessTokenExpireIn: 24h
+    refreshTokenExpireIn: 720h
   webhook:
     clientTimeout: 30
     idleWaitInterval: 2
