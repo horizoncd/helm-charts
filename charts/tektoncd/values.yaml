@@ -83,3 +83,5 @@ configDefaults:
     # but that a TaskRun does not explicitly provide.
     # default-task-run-workspace-binding: |
     #   emptyDir: {}
+
+scopeWhenExpressionsToTask: "true"
