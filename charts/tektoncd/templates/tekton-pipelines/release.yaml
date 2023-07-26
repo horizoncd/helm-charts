@@ -1105,11 +1105,17 @@ spec:
             "-shell-image", "{{ .Values.tektonPipelineController.shellImage }}",
             # for script mode to work with windows we need a powershell image
             # pinning to nanoserver tag as of July 15 2021
-            "-shell-image-win", "{{ .Values.tektonPipelineController.shellImageWin }}",
+            "-shell-image-win", "{{ .Values.tektonPipelineController.shellImageWin }}"
             # Experimental. Uncomment below to disable TaskRun and PipelineRun
             # reconcilers' built-in taskRef and pipelineRef resolution procedures.
             # "-experimental-disable-in-tree-resolution",
+            {{- range .Values.tektonPipelineController.extraArgs }}
+            , {{ . | quote }}
+            {{- end }}
           ]
+          {{- with .Values.tektonPipelineController.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: config-logging
               mountPath: /etc/config-logging
