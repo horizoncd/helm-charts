@@ -86,4 +86,5 @@ configDefaults:
     # default-task-run-workspace-binding: |
     #   emptyDir: {}
 
-scopeWhenExpressionsToTask: "true"
+featureFlags:
+  scopeWhenExpressionsToTask: "true"
