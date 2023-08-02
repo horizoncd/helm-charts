@@ -64,7 +64,14 @@ horizon:
         do
           if [[ "$GIT_REPOSITORY_URL" =~ "${URLs[$i]}" ]]
           then
-            GIT_PULL_URL="https://oauth2:${TOKENs[$i]}@${GIT_REPOSITORY_URL#https://}"
+            if [[ "$GIT_REPOSITORY_URL" =~ "http://" ]]
+            then 
+              GIT_PULL_URL="http://oauth2:${TOKENs[$i]}@${GIT_REPOSITORY_URL#http://}"
+            fi
+            if [[ "$GIT_REPOSITORY_URL" =~ "https://" ]]
+            then
+              GIT_PULL_URL="https://oauth2:${TOKENs[$i]}@${GIT_REPOSITORY_URL#https://}"
+            fi
             break
           fi
         done
