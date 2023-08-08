@@ -4,7 +4,7 @@ description: A CICD DevOps Platform
 
 type: application
 
-version: 2.2.11
+version: 2.2.12
 appVersion: v2.5.0
 dependencies:
   - name: common
@@ -20,7 +20,7 @@ dependencies:
       - full
 
   - name: tektoncd
-    version: 2.1.2
+    version: 2.1.3
     repository: https://horizoncd.github.io/helm-charts
     condition: tektoncd.enabled
     tags:

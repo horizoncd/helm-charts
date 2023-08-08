@@ -43,6 +43,8 @@ spec:
     - name: build
       taskRef:
         name: horizon-build
+      when:
+        {{- toYaml .Values.horizon.buildTask.whenExpression | nindent 8 }}
       params:
         - name: token
           value: $(params.token)
@@ -82,6 +84,8 @@ spec:
     - name: check
       taskRef:
         name: horizon-check
+      when:
+        {{- toYaml .Values.horizon.checkTask.whenExpression | nindent 8 }}
       runAfter:
         - build
       params:
