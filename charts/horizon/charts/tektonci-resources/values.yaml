@@ -10,11 +10,21 @@ horizon:
       gitStep: 5m
       compileStep:
       imageStep: 60m
+    whenExpression:
+      - input: "$(params.action)"
+        operator: in
+        values:
+          - "builddeploy"
   checkTask:
     image:
       checkStep: horizoncd/base-bash:v1.1.0
     timeout:
       checkStep: 2m
+    whenExpression:
+      - input: "$(params.imageURL)"
+        operator: notin
+        values:
+          - ""
   deployTask:
     image:
       deployStep: horizoncd/base-bash:v1.0.0
@@ -34,12 +44,6 @@ horizon:
       #!/bin/bash
       set -e
 
-      export ACTION="$(params.action)"
-      if [[ "$ACTION" == "deploy" ]]
-      then
-        exit 0
-      fi
-
       export SOURCE_DIR="/workspace/git-source"
       export GIT_TOKENS_DIR="/workspace/git-token"
       export GIT_REPOSITORY_URL="$(params.gitRepositoryUrl)"
@@ -47,7 +51,9 @@ horizon:
       export GIT_PULL_URL=""
 
       # config git ssh
-      rm -rf /root/.ssh && ln -s /tekton/home/.ssh /root
+      if [ ! -d /root/.ssh ] && [ -d /tekton/home/.ssh ]; then
+        rm -rf /root/.ssh && ln -s /tekton/home/.ssh /root
+      fi
       if [ -f "/root/.ssh/config" ]; then
         echo -e 'Host *\n    StrictHostKeyChecking no' >> /root/.ssh/config
       fi
@@ -89,12 +95,6 @@ horizon:
     compile: |
       #!/bin/bash
       set -e
-
-      export ACTION="$(params.action)"
-      if [[ "$ACTION" == "deploy" ]]
-      then
-        exit 0
-      fi
 
       export GIT_SUBFOLDER="$(params.gitSubfolder)"
       export PIPELINE_JSON_BLOB='$(params.pipelineJSONBlob)'
@@ -164,12 +164,6 @@ horizon:
       #!/bin/bash
       set -e
 
-      export ACTION="$(params.action)"
-      if [[ "$ACTION" == "deploy" ]]
-      then
-        exit 0
-      fi
-
       export BUILD_TYPE="$(cat $(workspaces.buildinfo.path)/build-type)"
 
       export APPLICATION="$(params.application)"
@@ -208,11 +202,6 @@ horizon:
       export ACTION="$(params.action)"
       export GIT_REPOSITORY_URL="$(params.gitRepositoryUrl)"
       export IMAGE_URL="$(params.imageURL)"
-
-      if [ -z $IMAGE_URL ]; then
-        echo "there's no image found, skipping..."
-        exit 0
-      fi
 
       is_json(){
         local INPUT="$1"
