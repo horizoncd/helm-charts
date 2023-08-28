@@ -165,16 +165,16 @@ horizon:
           golang)
           case $LANGUAGE_ENVIRONMENT in
             golang1.18)
-            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.18" }}
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.golang "golang1.18" }}
             ;;
             golang1.19)
-            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.19" }}
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.golang "golang1.19" }}
             ;;
             golang1.20)
-            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.20" }}
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.golang "golang1.20" }}
             ;;
             golang1.21)
-            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.21" }}
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.golang "golang1.21" }}
             ;;
           esac
           ;;
