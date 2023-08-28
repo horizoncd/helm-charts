@@ -3032,16 +3032,22 @@ build_schema:
       "properties": {
         "buildType": {
           "type": "string",
-          "title": "Build type",
+          "title": "构建类型",
           "oneOf": [
+            {
+              "enum": [
+                "normal"
+              ],
+              "title": "常规构建"
+            },
             {
               "enum": [
                 "dockerfile"
               ],
-              "title": "Dockerfile build"
+              "title": "Dockerfile构建"
             }
           ],
-          "default": "dockerfile"
+          "default": "normal"
         }
       },
       "dependencies": {
@@ -3051,19 +3057,170 @@ build_schema:
               "properties": {
                 "buildType": {
                   "enum": [
+                    "normal"
+                  ]
+                },
+                "language": {
+                  "type": "string",
+                  "title": "语言",
+                  "description": "选择项目使用的语言",
+                  "enum": [
+                    "java",
+                    "node",
+                    "golang"
+                  ],
+                  "default": "java"
+                },
+                "buildInfo": {
+                  "type": "object",
+                  "title": "",
+                  "properties": {
+                    "buildTool": {
+                      "type": "string",
+                      "title": "构建工具",
+                      "oneOf": [
+                        {
+                          "enum": [
+                            "shell"
+                          ],
+                          "title": "shell"
+                        }
+                      ],
+                      "default": "shell"
+                    }
+                  },
+                  "dependencies": {
+                    "buildTool": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "buildTool": {
+                              "enum": [
+                                "shell"
+                              ]
+                            },
+                            "shellScript": {
+                              "type": "string",
+                              "title": "Script"
+                            },
+                            "artifacts": {
+                              "type": "array",
+                              "title": "保留产物",
+                              "description": "可填写需要保留的文件相对代码根目录的路径。构建任务在临时环境中执行，只有被添加为\"保留产物\"的文件可以被保留并发布。",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "shellScript",
+                            "artifacts"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "buildTool"
+                  ]
+                }
+              },
+              "dependencies": {
+                "language": {
+                  "oneOf": [
+                    {
+                      "properties": {
+                        "language": {
+                          "enum": [
+                            "java"
+                          ]
+                        },
+                        "environment": {
+                          "type": "string",
+                          "title": "运行环境",
+                          "description": "选择制品依赖的运行环境",
+                          "enum": [
+                            "JDK1.8",
+                            "JDK11",
+                            "JDK17"
+                          ],
+                          "default": "JDK17"
+                        }
+                      },
+                      "required": [
+                        "environment"
+                      ]
+                    },
+                    {
+                      "properties": {
+                        "language": {
+                          "enum": [
+                            "node"
+                          ]
+                        },
+                        "environment": {
+                          "type": "string",
+                          "title": "运行环境",
+                          "description": "选择制品依赖的运行环境",
+                          "enum": [
+                            "node16",
+                            "node20"
+                          ],
+                          "default": "node20"
+                        }
+                      },
+                      "required": [
+                        "environment"
+                      ]
+                    },
+                    {
+                      "properties": {
+                        "language": {
+                          "enum": [
+                            "golang"
+                          ]
+                        },
+                        "environment": {
+                          "type": "string",
+                          "title": "运行环境",
+                          "description": "选择制品依赖的运行环境",
+                          "enum": [
+                            "golang1.18",
+                            "golang1.19",
+                            "golang1.20",
+                            "golang1.21"
+                          ],
+                          "default": "golang1.21"
+                        }
+                      },
+                      "required": [
+                        "environment"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "language"
+              ]
+            },
+            {
+              "properties": {
+                "buildType": {
+                  "enum": [
                     "dockerfile"
                   ]
                 },
                 "dockerfile": {
                   "type": "object",
-                  "title": "Dockerfile Build",
+                  "title": "Dockerfile构建",
                   "oneOf": [
                     {
-                      "title": "Dockerfile path",
+                      "title": "Dockerfile路径",
                       "properties": {
                         "path": {
                           "type": "string",
-                          "description": "Dockerfile path from your project root"
+                          "description": "Dockerfile基于项目根目录的相对路径"
                         }
                       },
                       "required": [
@@ -3071,7 +3228,7 @@ build_schema:
                       ]
                     },
                     {
-                      "title": "Dockerfile content",
+                      "title": "Dockerfile内容",
                       "properties": {
                         "content": {
                           "type": "string"
@@ -3085,7 +3242,7 @@ build_schema:
                 },
                 "buildArgs": {
                   "type": "array",
-                  "title": "Build arguments",
+                  "title": "构建参数",
                   "items": {
                     "type": "object",
                     "properties": {
@@ -3111,9 +3268,25 @@ build_schema:
     {
       "ui:order": [
         "buildType",
+        "language",
+        "environment",
+        "buildInfo",
         "dockerfile",
         "buildArgs"
       ],
+      "buildInfo": {
+        "shellScript": {
+          "ui:widget": "textarea",
+          "ui:options": {
+            "rows": 18
+          }
+        },
+        "ui:order": [
+          "buildTool",
+          "shellScript",
+          "artifacts"
+        ]
+      },
       "dockerfile": {
         "content": {
           "ui:widget": "textarea",
