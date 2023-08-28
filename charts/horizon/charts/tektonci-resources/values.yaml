@@ -37,6 +37,20 @@ horizon:
     horizonApiUrl: http://horizon-core.horizoncd.svc.cluster.local
   pipelineRun:
     podTemplate: {}
+    dockerfileBaseImage: horizoncd/base-bash:v1.0.0
+    baseImage:
+      java:
+        jdk1.8: maven:3.8.6-openjdk-8
+        jdk11: maven:3.8.6-amazoncorretto-11
+        jdk17: maven:3.8.6-amazoncorretto-17
+      node:
+        node16: node:16-alpine3.17
+        node20: node:20.5-alpine
+      golang:
+        golang1.18: golang:1.18-alpine
+        golang1.19: golang:1.19-alpine
+        golang1.20: golang:1.20-alpine
+        golang1.21: golang:1.21-alpine
   ingress:
     hosts: []
   script:
@@ -96,34 +110,123 @@ horizon:
       #!/bin/bash
       set -e
 
-      export GIT_SUBFOLDER="$(params.gitSubfolder)"
+      export APPLICATION="$(params.application)"
+      export CLUSTER="$(params.cluster)"
+      export ENVIRONMENT="$(params.environment)"
       export PIPELINE_JSON_BLOB='$(params.pipelineJSONBlob)'
+
+      export DOCKERFILE_BASE_IMAGE="{{ .Values.horizon.pipelineRun.dockerfileBaseImage }}"
+      export BASE_IMAGE="$DOCKERFILE_BASE_IMAGE"
+      export NORMAL_BUILD="normal"
       export DOCKERFILE_BUILD="dockerfile"
       export BUILD_CATEGORY="$(jq -r '.buildType//empty'<<<"$PIPELINE_JSON_BLOB")"
+      export LANGUAGE="$(jq -r '.language//empty'<<<"$PIPELINE_JSON_BLOB")"
+      export LANGUAGE_ENVIRONMENT="$(jq -r '.environment//empty'<<<"$PIPELINE_JSON_BLOB")"
+      export BUILD_TOOL="$(jq -r '.buildInfo.buildTool//empty'<<<"$PIPELINE_JSON_BLOB")"
+      export SHELLSCRIPT="$(jq -r '.buildInfo.shellScript//empty'<<<"$PIPELINE_JSON_BLOB")"
+      export CUSTOMIZED_ARTIFACTS=($(jq -r '.buildInfo.artifacts//empty'<<<"$PIPELINE_JSON_BLOB" | tr -d '[],"'))
       export DOCKERFILE="$(jq -r '.dockerfile.content//empty'<<<"$PIPELINE_JSON_BLOB")"
       export DOCKERFILE_PATH="$(jq -r '.dockerfile.path//empty'<<<"$PIPELINE_JSON_BLOB")"
 
       build_type(){
         local BUILD_TYPE=""
-        if [[ "$BUILD_CATEGORY" == "$DOCKERFILE_BUILD" ]]
-        then
-          [[ -z "$BUILD_TYPE" ]] && [[ ! -z "$DOCKERFILE" ]] && BUILD_TYPE="dockerfileContent"
-          [[ -z "$BUILD_TYPE" ]] && [[ ! -z "$DOCKERFILE_PATH" ]] && BUILD_TYPE="dockerfilePath"
-        fi
-        [[ -z "$BUILD_TYPE" ]] && echo "build type is invalid!" >&2 && return 1
-        echo "BUILD_TYPE: ${BUILD_TYPE}" >&2
+        [[ "$BUILD_CATEGORY" == "$NORMAL_BUILD" ]] && BUILD_TYPE="$BUILD_TOOL"
+        [[ -z "$BUILD_TYPE" ]] && [[ "$BUILD_CATEGORY" == "$DOCKERFILE_BUILD" ]] && [[ ! -z "$DOCKERFILE" ]] && BUILD_TYPE="dockerfile"
+        [[ -z "$BUILD_TYPE" ]] && [[ "$BUILD_CATEGORY" == "$DOCKERFILE_BUILD" ]] && [[ ! -z "$DOCKERFILE_PATH" ]] && BUILD_TYPE="dockerfilePath"
+        echo "BUILD_TYPE: ${BUILD_TYPE:-"dockerfile in repo"}" >&2
         echo "$BUILD_TYPE"
       }
 
+      set_base_image(){
+        case $LANGUAGE in
+          java)
+          case $LANGUAGE_ENVIRONMENT in
+            JDK1.8)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.java "jdk1.8" }}
+            ;;
+            JDK11)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.java "jdk11" }}
+            ;;
+            JDK17)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.java "jdk17" }}
+            ;;
+          esac
+          ;;
+          node)
+          case $LANGUAGE_ENVIRONMENT in
+            node16)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "node16" }}
+            ;;
+            node20)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "node20" }}
+            ;;
+          esac
+          ;;
+          golang)
+          case $LANGUAGE_ENVIRONMENT in
+            golang1.18)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.18" }}
+            ;;
+            golang1.19)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.19" }}
+            ;;
+            golang1.20)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.20" }}
+            ;;
+            golang1.21)
+            BASE_IMAGE={{ index .Values.horizon.pipelineRun.baseImage.node "golang1.21" }}
+            ;;
+          esac
+          ;;
+        esac
+      }
+
+      # debug
+      showDockerfile(){
+        echo -e "\nDockerfile:"
+        cat Dockerfile
+      }
+
+      # 根据BUILD_TYPE构建类型准备Dockerfile
       prepare_dockerfile(){
-        [[ "$BUILD_TYPE" == "dockerfileContent" ]] && {
+        local BUILD_TYPE="$1"
+        # BUILD_TYPE为shell，则添加shell构建的Dockerfile，由系统写入
+        [[ "$BUILD_TYPE" == "shell" ]] && {
+          # 用户自定义的制品目录数组
+          artifacts=$(IFS=" "; echo "${CUSTOMIZED_ARTIFACTS[*]}")
+
+          # 准备构建脚本
+          cat >.horizon_build.sh<<<$(echo "$SHELLSCRIPT")
+
+          # 创建Dockerfile
+          printf "%s\n" \
+          "FROM $BASE_IMAGE as builder" \
+          "COPY . /" \
+          "RUN cd / && ENVIRONMENT=$ENVIRONMENT sh .horizon_build.sh" \
+          "FROM $BASE_IMAGE" \
+          "COPY --from=builder ${artifacts[*]} /artifacts/" > Dockerfile
+          showDockerfile
+          return
+        }
+
+        # BUILD_TYPE为Dockerfile，则写入由用户传入的Dockerfile内容
+        [[ "$BUILD_TYPE" == "dockerfile" ]] && {
           cat >Dockerfile<<<$(echo "$DOCKERFILE")
         }
 
+        # BUILD_TYPE为dockerfilePath，则检查指定的dockerfilePath是否存在
         [[ "$BUILD_TYPE" == "dockerfilePath" ]] && {
           local DOCKERFILE_ABSOLUTE_PATH="$PWD/${DOCKERFILE_PATH#/}"
           [[ -f "$DOCKERFILE_ABSOLUTE_PATH" ]] || {
             echo "dockerfile:$DOCKERFILE_PATH is not exists!"; return 1
+          }
+        }
+
+        # 否则，BUILD_TYPE为空，表示使用应用子目录下的Dockerfile
+        # 要求应用子目录下的Dockerfile必须存在，否则错误退出
+        [[ -z "$BUILD_TYPE" ]] && {
+          [[ -f "Dockerfile" ]] || {
+          echo "Dockerfile not exists!"; return 1
           }
         }
 
@@ -141,23 +244,28 @@ horizon:
 
       record_build_info(){
         local BUILD_TYPE="$1"
+        # 记录build_type
         cat >$(workspaces.buildinfo.path)/build-type<<<"$BUILD_TYPE"
       }
 
       main(){
-        # enter git subfolder
-        SUBFOLDER=${GIT_SUBFOLDER#/}
+        # 进入git subfolder
+        SUBFOLDER=$(params.gitSubfolder)
+        SUBFOLDER=${SUBFOLDER#/}
         [[ -z "$SUBFOLDER" ]] || {
           cd "$SUBFOLDER"
         }
 
-        # get build type
+        # 获取BUILD_TYPE构建类型
         BUILD_TYPE=$(build_type)
 
-        # prepare dockerfile
+        # 根据输入参数获取dockerfile的基础镜像
+        set_base_image
+
+        # 准备dockerfile
         prepare_dockerfile "$BUILD_TYPE"
 
-        # record build type
+        # 记录build_type
         record_build_info "$BUILD_TYPE"
       } && main
     image: |
@@ -176,22 +284,22 @@ horizon:
       export SUBFOLDER=$(params.gitSubfolder)
       export CONTEXT="/workspace/git-source/${SUBFOLDER#/}"
 
-
       [[ "$BUILD_TYPE" != "dockerfilePath" ]] && export DOCKERFILE_PATH="Dockerfile"
       export DOCKERFILE_PATH="${CONTEXT%/}/${DOCKERFILE_PATH#/}"
 
       echo -e "\nstart building: $DOCKER_IMAGE"
 
       CMD_BUILD="time podman build --network=host --force-rm \
-        --build-arg APPLICATION=$APPLICATION \
-        --build-arg CLUSTER=$CLUSTER \
-        --build-arg ENVIRONMENT=$ENVIRONMENT \
-        $EXTRA_BUILD_ARGS \
-        --file $DOCKERFILE_PATH \
-        -t $DOCKER_IMAGE $CONTEXT"
+        --build-arg APPLICATION="$APPLICATION" \
+        --build-arg CLUSTER="$CLUSTER" \
+        --build-arg ENVIRONMENT="$ENVIRONMENT" \
+        "$EXTRA_BUILD_ARGS" \
+        --file "$DOCKERFILE_PATH" \
+        -t "$DOCKER_IMAGE" "$CONTEXT" "
 
-      CMD_PUSH="time podman push $DOCKER_IMAGE && \
-        time podman rmi $DOCKER_IMAGE"
+      CMD_PUSH="time podman push "$DOCKER_IMAGE" && \
+        time podman rmi "$DOCKER_IMAGE" "
+
       eval "$CMD_BUILD" && eval "$CMD_PUSH" && exit 0
       exit 1
     check: |

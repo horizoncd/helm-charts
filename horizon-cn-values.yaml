@@ -164,6 +164,24 @@ tektonci-resources:
         gitStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.0.0
         compileStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.0.0
         imageStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/podman-bash:v1.0.0
+    checkTask:
+      image:
+        checkStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.1.0
     deployTask:
       image:
         deployStep: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.0.0
+    pipelineRun:
+      dockerfileBaseImage: registry.cn-hangzhou.aliyuncs.com/horizoncd/base-bash:v1.0.0
+      baseImage:
+        java:
+          jdk1.8: registry.cn-hangzhou.aliyuncs.com/horizoncd/maven:3.8.6-openjdk-8
+          jdk11: registry.cn-hangzhou.aliyuncs.com/horizoncd/maven:3.8.6-amazoncorretto-11
+          jdk17: registry.cn-hangzhou.aliyuncs.com/horizoncd/maven:3.8.6-amazoncorretto-17
+        node:
+          node16: registry.cn-hangzhou.aliyuncs.com/horizoncd/node:16-alpine3.17
+          node20: registry.cn-hangzhou.aliyuncs.com/horizoncd/node:20.5-alpine
+        golang:
+          golang1.18: registry.cn-hangzhou.aliyuncs.com/horizoncd/golang:1.18-alpine
+          golang1.19: registry.cn-hangzhou.aliyuncs.com/horizoncd/golang:1.19-alpine
+          golang1.20: registry.cn-hangzhou.aliyuncs.com/horizoncd/golang:1.20-alpine
+          golang1.21: registry.cn-hangzhou.aliyuncs.com/horizoncd/golang:1.21-alpine
