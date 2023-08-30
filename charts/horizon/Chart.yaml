@@ -4,12 +4,12 @@ description: A CICD DevOps Platform
 
 type: application
 
-version: 2.2.15
+version: 2.2.16
 appVersion: v2.5.1
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
-    version: 2.x.x
+    version: 2.8.0
 
   - name: gitlab
     version: 2.0.2
