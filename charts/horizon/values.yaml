@@ -2110,7 +2110,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.3.6
+    tag: v2.4.0
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2130,7 +2130,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 roles:
-  RolePriorityRankDesc: [pe,owner,maintainer,tagger,guest]
+  RolePriorityRankDesc: [pe, owner, maintainer, tagger, guest]
   DefaultRole: guest
   Roles:
     - name: owner
@@ -2208,6 +2208,11 @@ roles:
             - pipelineruns/stop
             - pipelineruns/log
             - pipelineruns/diffs
+            - pipelineruns/cancel
+            - pipelineruns/run
+            - pipelineruns/messages
+            - pipelineruns/checkruns
+            - checkruns
             - clusters/dashboards
             - clusters/pods
             - clusters/pod
@@ -2357,6 +2362,11 @@ roles:
             - pipelineruns/stop
             - pipelineruns/log
             - pipelineruns/diffs
+            - pipelineruns/cancel
+            - pipelineruns/run
+            - pipelineruns/messages
+            - pipelineruns/checkruns
+            - checkruns
             - clusters/dashboards
             - clusters/pods
             - clusters/pod
@@ -2557,6 +2567,12 @@ roles:
             - pipelineruns/stop
             - pipelineruns/log
             - pipelineruns/diffs
+            - pipelineruns/cancel
+            - pipelineruns/run
+            - pipelineruns/forcerun
+            - pipelineruns/messages
+            - pipelineruns/checkruns
+            - checkruns
             - clusters/dashboards
             - clusters/pods
             - clusters/pod
@@ -2669,6 +2685,9 @@ roles:
             - pipelineruns
             - pipelineruns/log
             - pipelineruns/diffs
+            - pipelineruns/messages
+            - pipelineruns/checkruns
+            - checkruns
             - clusters/dashboards
             - clusters/pods
             - clusters/pod
@@ -2842,6 +2861,9 @@ scopes:
             - pipelineruns
             - pipelineruns/log
             - pipelineruns/diffs
+            - pipelineruns/messages
+            - pipelineruns/checkruns
+            - checkruns
             - clusters/events
             - clusters/outputs
             - clusters/containers
@@ -2882,6 +2904,12 @@ scopes:
             - pipelineruns/stop
             - pipelineruns/log
             - pipelineruns/diffs
+            - pipelineruns/cancel
+            - pipelineruns/run
+            - pipelineruns/forcerun
+            - pipelineruns/messages
+            - pipelineruns/checkruns
+            - checkruns
             - clusters/dashboards
             - clusters/pods
             - clusters/pod
@@ -2900,6 +2928,32 @@ scopes:
             - clusters/favorite
           verbs:
             - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: checks:read-write
+      desc: 检查(check)及其相关子资源的读写删权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - pipelineruns/checkruns
+            - checkruns
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - applications
+            - clusters
+            - pipelineruns
+          verbs:
+            - get
           scopes:
             - "*"
           nonResourceURLs:
