@@ -3565,7 +3565,6 @@ harbor:
     external:
       addr: "horizon-redis-master:6379"
 
-  chartmuseum:
   core:
     replicas: 1
   jobservice:
