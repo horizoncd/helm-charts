@@ -1,3 +1,22 @@
+create table if not exists `tb_badge`
+(
+    id            bigint(20) unsigned NOT NULL AUTO_INCREMENT
+        primary key,
+    event_id      bigint(20) unsigned NOT NULL,
+    resource_type varchar(64)         NOT NULL DEFAULT '' COMMENT 'resource type',
+    resource_id   bigint(20) unsigned NOT NULL COMMENT 'resource id',
+    `name`        varchar(64)        NOT NULL DEFAULT '' COMMENT 'badge name',
+    svg_link      varchar(256)        NOT NULL DEFAULT '' COMMENT 'badge svg link',
+    redirect_link varchar(256)        NOT NULL DEFAULT '' COMMENT 'badge redirect link',
+    created_at    datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_ts    bigint(20)                   DEFAULT '0' COMMENT 'deleted timestamp, 0 means not deleted',
+    created_by    bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'creator',
+    updated_by    bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'updater',
+    constraint uk_resource_name_deletedTs
+        unique (resource_id, resource_type, `name`, deleted_ts)
+);
+
 create table if not exists tb_collection
 (
   id            bigint(20) unsigned NOT NULL AUTO_INCREMENT
