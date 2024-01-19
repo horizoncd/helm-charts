@@ -2110,7 +2110,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.6.1
+    tag: v2.6.2
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2130,7 +2130,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 roles:
-  RolePriorityRankDesc: [pe, owner, maintainer, tagger, guest]
+  RolePriorityRankDesc: [pe,owner,maintainer,tagger,guest]
   DefaultRole: guest
   Roles:
     - name: owner
@@ -2226,6 +2226,7 @@ roles:
             - clusters/containers
             - clusters/webhooks
             - clusters/favorite
+            - clusters/badges
           verbs:
             - "*"
           scopes:
@@ -2457,6 +2458,7 @@ roles:
             - clusters/accesstokens
             - personalaccesstokens
             - accesstokens
+            - clusters/badges
           verbs:
             - "*"
           scopes:
@@ -2629,6 +2631,7 @@ roles:
             - clusters/accesstokens
             - personalccesstokens
             - accesstokens
+            - clusters/badges
           verbs:
             - "*"
           scopes:
@@ -2699,6 +2702,7 @@ roles:
             - applications/accesstokens
             - clusters/accesstokens
             - personalaccesstokens
+            - clusters/badges
           verbs:
             - get
           scopes:
@@ -2755,6 +2759,21 @@ scopes:
     - applications:read-write
     - clusters:read-write
   roles:
+    - name: metatags:read-only
+      desc: 预置标签的只读权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - metatags
+            - metatagkeys
+          verbs:
+            - get
+            - list
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
     - name: groups:read-only
       desc: 分组(group)及其相关子资源的只读权限
       rules:
@@ -2871,6 +2890,8 @@ scopes:
             - clusters/buildstatus
             - clusters/step
             - clusters/resourcetree
+            - clusters/templateschematags
+            - clusters/badges
           verbs:
             - get
           scopes:
@@ -2925,7 +2946,9 @@ scopes:
             - clusters/buildstatus
             - clusters/step
             - clusters/resourcetree
-            - clusters/favorite
+            - clusters/action
+            - clusters/templateschematags
+            - clusters/badges
           verbs:
             - "*"
           scopes:
