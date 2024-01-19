@@ -2110,7 +2110,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.6.1
+    tag: v2.6.2
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2187,10 +2187,8 @@ roles:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
-            - clusters/deployall
             - clusters/action
             - clusters/restart
             - clusters/rollback
@@ -2344,10 +2342,8 @@ roles:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
-            - clusters/deployall
             - clusters/action
             - clusters/restart
             - clusters/rollback
@@ -2552,10 +2548,8 @@ roles:
             - applications/clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
-            - clusters/deployall
             - clusters/action
             - clusters/restart
             - clusters/rollback
@@ -2914,7 +2908,6 @@ scopes:
             - clusters
             - clusters/builddeploy
             - clusters/deploy
-            - clusters/upgrade
             - clusters/diffs
             - clusters/next
             - clusters/action
