@@ -667,6 +667,7 @@ CREATE TABLE if not exists `tb_pr_msg`
   `id`              bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `pipeline_run_id` bigint(20) unsigned NOT NULL COMMENT 'pipeline run id',
   `content`         text                NOT NULL COMMENT 'content of message',
+  `message_type`    tinyint(1) unsigned NOT NULL DEFAULT 0 COMMENT '0 for user message, 1 for system message',
   `created_at`      datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by`      bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'creator',

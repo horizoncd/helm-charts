@@ -2110,7 +2110,7 @@ web:
   replicas: 1
   image:
     repository: horizoncd/horizon-web
-    tag: v2.6.3
+    tag: v2.6.4
   securityContext:
     runAsUser: 10001
     fsGroup: 10001
@@ -2571,7 +2571,7 @@ roles:
             - pipelineruns/diffs
             - pipelineruns/cancel
             - pipelineruns/run
-            - pipelineruns/forcerun
+            - pipelineruns/forceready
             - pipelineruns/messages
             - pipelineruns/checkruns
             - checkruns
@@ -2927,7 +2927,7 @@ scopes:
             - pipelineruns/diffs
             - pipelineruns/cancel
             - pipelineruns/run
-            - pipelineruns/forcerun
+            - pipelineruns/forceready
             - pipelineruns/messages
             - pipelineruns/checkruns
             - checkruns
