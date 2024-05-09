@@ -54,18 +54,18 @@ redis:
       tag: 11-debian-11-r99
 
 # for horizon
-core:
-  image:
-    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-core
-job:
-  image:
-    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-job
-swagger:
-  image:
-    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-swagger
-web:
-  image:
-    repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-web
+# core:
+#   image:
+#     repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-core
+# job:
+#   image:
+#     repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-job
+# swagger:
+#   image:
+#     repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-swagger
+# web:
+#   image:
+#     repository: registry.cn-hangzhou.aliyuncs.com/horizoncd/horizon-web
 
 chartmuseum:
   image:
