@@ -47,6 +47,7 @@ config:
     password:
     insecure: true
     repoName:
+  regionArgoCDMapper: {}
   argoCDMapper:
     default:
       url: http://horizon-argocd-server
