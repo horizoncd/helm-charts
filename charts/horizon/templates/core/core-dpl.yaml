@@ -78,7 +78,7 @@ spec:
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /health
+            path: /ready
             port: {{ .Values.config.serverConfig.port }}
           timeoutSeconds: 1
           successThreshold: 1
