@@ -1,0 +1,3265 @@
+## This values.yaml sets the PV created to 20Gi in a scenario where you have a default storageclass by default,
+## and removes the Minio component from deployment
+config:
+  serverConfig:
+    port: 8080
+  cloudEventServerConfig:
+    port: 8181
+  pprofConfig:
+    enabled: true
+    port: 8282
+  dbConfig:
+    host: "{{ .Release.Name }}-mysql"
+    port: 3306
+    username: root
+    password: horizon
+    database: horizon
+    prometheusEnabled: true
+  kubeconfig: ""
+  redisConfig:
+    protocol: tcp
+    address: 'horizon-redis-ha:6379'
+    password: ""
+    db: 1
+  sessionConfig:
+    maxAge: 43200
+  gitRepos: []
+  gitopsRepoConfig:
+    rootGroupPath: cloud-native
+    url: "http://{{ .Release.Name }}-gitlab"
+    token: horizon-access-token
+  templateRepo:
+    kind: chartmuseum
+    host: "http://horizon-chartmuseum:8080"
+    username:
+    password:
+    insecure: true
+    repoName:
+  argoCDMapper:
+    default:
+      url: http://horizon-argocd-server
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcmdvY2QiLCJzdWIiOiJyb2JvdDphcGlLZXkiLCJuYmYiOjE2NzMyMzY0NjQsImlhdCI6MTY3MzIzNjQ2NCwianRpIjoiYmQwNWEyNzgtMmM4Ni00MDQ3LTliZDgtZWY2NDIwOWRmZmE1In0.-rKVxUkS2kkErzJsSlCvKc2P5Xfvzf_q5Fq0sRpR53Y
+      namespace: "{{ .Release.Namespace }}"
+  tektonMapper:
+    default:
+      server: http://el-horizon-listener:8080
+      namespace: "{{ .Release.Namespace }}"
+      kubeconfig: ""
+      s3:
+        accessKey: admin
+        secretKey: qOIh3Xt5jg
+        region: china
+        endpoint: "{{ .Release.Name }}-minio:9000"
+        bucket: horizon
+        disableSSL: true
+        skipVerify: true
+        s3ForcePathStyle: true
+  grafanaConfig:
+    host: "http://grafana.h8r.site"
+    namespace: "{{ .Release.Namespace }}"
+    dashboards:
+      # label that the configmaps with dashboards are marked with
+      labelKey: grafana_dashboard
+      # value of label that the configmaps with dashboards are set to
+      labelValue: "1"
+    syncDatasourceConfig:
+      period: 2m
+      # label that the configmaps with datasources are marked with
+      labelKey: grafana_datasource
+      # value of label that the configmaps with datasources are set to
+      labelValue: "1"
+  autoFree:
+    supportedEnvs: []
+    accountID: 1
+    jobInterval: 1h
+    batchInterval: 20s
+    batchSize: 20
+  oauth:
+    oauthHTMLLocation: "/home/appops/authhtml"
+    authorizeCodeExpireIn: 10m
+    accessTokenExpireIn: 24h
+  webhook:
+    clientTimeout: 30
+    idleWaitInterval: 2
+    workerReconcileInterval: 5
+    responseBodyTruncateSize: 16384
+  eventHandler:
+    batchEventsCount: 5
+    cursorSaveInterval: 10
+    idleWaitInterval: 3
+
+ingress:
+  enabled: true
+  pathType: ImplementationSpecific
+  hosts:
+    - horizon.h8r.site
+  tls: []
+
+core:
+  replicas: 1
+  additionalLabels: {}
+  image:
+    repository: horizoncd/horizon-core
+    tag: v2.0.9
+  args:
+    loglevel:
+    gitOpsRepoDefaultBranch: master
+  securityContext:
+    runAsUser: 10001
+    fsGroup: 10001
+  serviceAccount:
+    create: true
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  service:
+    port: 80
+  cloudEventService:
+    port: 80
+  cloudEventIngress:
+    enabled: false
+    pathType: ImplementationSpecific
+    hosts: []
+  envs: {}
+  extraVolumeMounts: []
+  extraVolumes: []
+  monitor:
+    enabled: false
+  grafanaDashboards:
+    - name: pod
+      value: |
+        {
+          "annotations": {
+            "list": [
+              {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                  "limit": 100,
+                  "matchAny": false,
+                  "tags": [],
+                  "type": "dashboard"
+                },
+                "type": "dashboard"
+              }
+            ]
+          },
+          "editable": true,
+          "fiscalYearStartMonth": 0,
+          "graphTooltip": 0,
+          "iteration": 1666664367567,
+          "links": [],
+          "liveNow": false,
+          "panels": [
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+              },
+              "id": 12,
+              "panels": [],
+              "title": "CPU Usage",
+              "type": "row"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 0,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "max": 100,
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "percent"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 1
+              },
+              "id": 1,
+              "links": [],
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "pluginVersion": "8.4.5",
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{container!=\"\",namespace=\"$namespace\",pod=~\"$pod\"}[2m])) / (sum by (pod) (kube_pod_container_resource_limits_cpu_cores{container!=\"\",namespace=\"$namespace\",pod=~\"$pod\"})) * 100",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "title": "CPU Usage Ratio",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 0,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "short"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "requests"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "#F2495C",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 0
+                      },
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "limits"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "#FF9830",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 0
+                      },
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
+                      }
+                    ]
+                  }
+                ]
+              },
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 8
+              },
+              "id": 21,
+              "links": [],
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "pluginVersion": "8.4.5",
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{container!=\"\",namespace=\"$namespace\",pod=~\"$pod\"}[2m]))",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A",
+                  "step": 10
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_requests_cpu_cores{namespace=\"$namespace\", pod=~\"$pod\"}) /\nsum(kube_pod_info{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\"$pod\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "requests",
+                  "refId": "B"
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_limits_cpu_cores{namespace=\"$namespace\", pod=~\"$pod\"}) / \nsum(kube_pod_info{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\"$pod\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "limits",
+                  "refId": "C"
+                }
+              ],
+              "title": "CPU Usage",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 0,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "line+area"
+                    }
+                  },
+                  "mappings": [],
+                  "max": 1,
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "transparent",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 0.25
+                      }
+                    ]
+                  },
+                  "unit": "percentunit"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 15
+              },
+              "id": 23,
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "max"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "pluginVersion": "8.4.5",
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum(increase(container_cpu_cfs_throttled_periods_total{namespace=\"$namespace\", pod=~\"$pod\", container!=\"POD\", container!=\"\"}[5m])) by (pod) /sum(increase(container_cpu_cfs_periods_total{namespace=\"$namespace\", pod=~\"$pod\", container!=\"POD\", container!=\"\"}[5m])) by (pod)",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A"
+                }
+              ],
+              "title": "CPU Throttling",
+              "type": "timeseries"
+            },
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 23
+              },
+              "id": 15,
+              "panels": [],
+              "title": "Memory Usage",
+              "type": "row"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 0,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "bytes"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "requests"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "#F2495C",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 0
+                      },
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "limits"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "#FF9830",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.fillOpacity",
+                        "value": 0
+                      },
+                      {
+                        "id": "custom.lineWidth",
+                        "value": 2
+                      }
+                    ]
+                  }
+                ]
+              },
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 24
+              },
+              "id": 20,
+              "links": [],
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "pluginVersion": "8.4.5",
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", container!=\"POD\", container!=\"\", image!=\"\"}) by (pod)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A",
+                  "step": 10
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_requests_memory_bytes{namespace=\"$namespace\", pod=~\"$pod\"}) / \nsum(kube_pod_info{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\"$pod\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "requests",
+                  "refId": "B"
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_limits_memory_bytes{namespace=\"$namespace\", pod=~\"$pod\"}) / \nsum(kube_pod_info{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\"$pod\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "limits",
+                  "refId": "C"
+                }
+              ],
+              "title": "Memory Usage",
+              "type": "timeseries"
+            },
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 31
+              },
+              "id": 17,
+              "panels": [],
+              "title": "Network Receive",
+              "type": "row"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 0,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "Bps"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 32
+              },
+              "id": 6,
+              "interval": "1m",
+              "links": [],
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "pluginVersion": "8.4.5",
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum(irate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "title": "Receive Bandwidth",
+              "type": "timeseries"
+            },
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 39
+              },
+              "id": 18,
+              "panels": [],
+              "title": "Network Transmit",
+              "type": "row"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 0,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "Bps"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 40
+              },
+              "id": 7,
+              "interval": "1m",
+              "links": [],
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "pluginVersion": "8.4.5",
+              "targets": [
+                {
+                  "expr": "sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod)",
+                  "format": "time_series",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "title": "Transmit Bandwidth",
+              "type": "timeseries"
+            },
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 47
+              },
+              "id": 25,
+              "panels": [],
+              "title": "Replica Count",
+              "type": "row"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "spanNulls": true,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "decimals": 0,
+                  "mappings": [],
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "short"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 48
+              },
+              "id": 27,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "hidden",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
+              "pluginVersion": "8.4.5",
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "count(kube_pod_container_info{namespace=\"$namespace\", container=\"$cluster\"})",
+                  "interval": "",
+                  "legendFormat": "count",
+                  "refId": "A"
+                }
+              ],
+              "title": "Replica Count",
+              "type": "timeseries"
+            }
+          ],
+          "refresh": "5s",
+          "schemaVersion": 35,
+          "style": "dark",
+          "tags": [
+            "default"
+          ],
+          "templating": {
+            "list": [
+              {
+                "current": {
+                  "selected": false,
+                  "text": "Prometheus",
+                  "value": "Prometheus"
+                },
+                "hide": 2,
+                "includeAll": false,
+                "multi": false,
+                "name": "datasource",
+                "options": [],
+                "query": "prometheus",
+                "queryValue": "",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "type": "datasource"
+              },
+              {
+                "current": {
+                  "selected": false,
+                  "text": "default",
+                  "value": "default"
+                },
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "$datasource"
+                },
+                "definition": "label_values(kube_namespace_created{job=\"kube-state-metrics\"}, namespace)",
+                "hide": 2,
+                "includeAll": false,
+                "multi": false,
+                "name": "namespace",
+                "options": [],
+                "query": {
+                  "query": "label_values(kube_namespace_created{job=\"kube-state-metrics\"}, namespace)",
+                  "refId": "StandardVariableQuery"
+                },
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 1,
+                "tagValuesQuery": "",
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+              },
+              {
+                "current": {
+                  "selected": true,
+                  "text": [
+                    "All"
+                  ],
+                  "value": [
+                    "$__all"
+                  ]
+                },
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "$datasource"
+                },
+                "definition": "label_values(kube_pod_container_info{job=\"kube-state-metrics\", namespace=\"$namespace\", container=\"$cluster\"}, pod)",
+                "hide": 0,
+                "includeAll": true,
+                "multi": true,
+                "name": "pod",
+                "options": [],
+                "query": {
+                  "query": "label_values(kube_pod_container_info{job=\"kube-state-metrics\", namespace=\"$namespace\", container=\"$cluster\"}, pod)",
+                  "refId": "StandardVariableQuery"
+                },
+                "refresh": 2,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 1,
+                "tagValuesQuery": "",
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+              },
+              {
+                "current": {
+                  "selected": false,
+                  "text": "",
+                  "value": ""
+                },
+                "hide": 2,
+                "name": "cluster",
+                "options": [
+                  {
+                    "selected": true,
+                    "text": "",
+                    "value": ""
+                  }
+                ],
+                "query": "",
+                "skipUrlSync": false,
+                "type": "textbox"
+              }
+            ]
+          },
+          "time": {
+            "from": "now-24h",
+            "to": "now"
+          },
+          "timepicker": {
+            "refresh_intervals": [
+              "5s",
+              "10s",
+              "30s",
+              "1m",
+              "5m",
+              "15m",
+              "30m",
+              "1h",
+              "2h",
+              "1d"
+            ],
+            "time_options": [
+              "5m",
+              "15m",
+              "1h",
+              "6h",
+              "12h",
+              "24h",
+              "2d",
+              "7d",
+              "30d"
+            ]
+          },
+          "timezone": "",
+          "title": "Pod",
+          "uid": "horizon-pod",
+          "version": 1,
+          "weekStart": ""
+        }
+
+
+    - name: container
+      value: |
+        {
+          "annotations": {
+            "list": [
+              {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                  "limit": 100,
+                  "matchAny": false,
+                  "tags": [],
+                  "type": "dashboard"
+                },
+                "type": "dashboard"
+              }
+            ]
+          },
+          "editable": true,
+          "fiscalYearStartMonth": 0,
+          "graphTooltip": 0,
+          "id": 69,
+          "iteration": 1663831709666,
+          "links": [],
+          "liveNow": false,
+          "panels": [
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+              },
+              "id": 12,
+              "panels": [],
+              "title": "CPU Usage",
+              "type": "row"
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fill": 10,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 1
+              },
+              "hiddenSeries": false,
+              "id": 1,
+              "legend": {
+                "avg": false,
+                "current": true,
+                "max": true,
+                "min": false,
+                "rightSide": false,
+                "show": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 0,
+              "links": [],
+              "nullPointMode": "null as zero",
+              "options": {
+                "alertThreshold": false
+              },
+              "percentage": false,
+              "pluginVersion": "8.4.5",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum by (pod, container) (rate(container_cpu_usage_seconds_total{container=~\"$container\",namespace=\"$namespace\",pod=~\"$pod\"}[2m])) / (sum by (pod, container) (kube_pod_container_resource_limits_cpu_cores{container=~\"$container\",namespace=\"$namespace\",pod=~\"$pod\"}))",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{container}} [{{pod}}]",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "CPU Usage Ratio",
+              "tooltip": {
+                "shared": true,
+                "sort": 2,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "$$hashKey": "object:917",
+                  "format": "percentunit",
+                  "label": "",
+                  "logBase": 1,
+                  "max": "1",
+                  "show": true
+                },
+                {
+                  "$$hashKey": "object:918",
+                  "format": "none",
+                  "label": "",
+                  "logBase": 1,
+                  "max": "200",
+                  "min": "0",
+                  "show": false
+                }
+              ],
+              "yaxis": {
+                "align": false,
+                "alignLevel": 9
+              }
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fill": 10,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 8
+              },
+              "hiddenSeries": false,
+              "id": 21,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "rightSide": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 0,
+              "links": [],
+              "nullPointMode": "null as zero",
+              "options": {
+                "alertThreshold": false
+              },
+              "percentage": false,
+              "pluginVersion": "8.4.5",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [
+                {
+                  "$$hashKey": "object:216",
+                  "alias": "requests",
+                  "color": "#F2495C",
+                  "fill": 0,
+                  "linewidth": 2
+                },
+                {
+                  "$$hashKey": "object:224",
+                  "alias": "limits",
+                  "color": "#FF9830",
+                  "fill": 0,
+                  "linewidth": 2
+                }
+              ],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum by (pod,container) (rate(container_cpu_usage_seconds_total{container=~\"$container\",namespace=\"$namespace\",pod=~\"$pod\"}[2m]))",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{container}} [{{pod}}]",
+                  "refId": "A",
+                  "step": 10
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_requests_cpu_cores{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"}) /\nsum(kube_pod_container_info{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "requests",
+                  "refId": "B"
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_limits_cpu_cores{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"}) /\nsum(kube_pod_container_info{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "limits",
+                  "refId": "C"
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "CPU Usage",
+              "tooltip": {
+                "shared": true,
+                "sort": 2,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "$$hashKey": "object:917",
+                  "format": "short",
+                  "label": "",
+                  "logBase": 1,
+                  "min": "0",
+                  "show": true
+                },
+                {
+                  "$$hashKey": "object:918",
+                  "format": "none",
+                  "label": "",
+                  "logBase": 1,
+                  "max": "200",
+                  "min": "0",
+                  "show": false
+                }
+              ],
+              "yaxis": {
+                "align": false,
+                "alignLevel": 9
+              }
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "fill": 10,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 15
+              },
+              "hiddenSeries": false,
+              "id": 23,
+              "legend": {
+                "avg": false,
+                "current": true,
+                "max": true,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 0,
+              "nullPointMode": "null as zero",
+              "options": {
+                "alertThreshold": true
+              },
+              "percentage": false,
+              "pluginVersion": "8.4.5",
+              "pointradius": 2,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum(increase(container_cpu_cfs_throttled_periods_total{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\", container!=\"\"}[5m])) by (pod,container) /sum(increase(container_cpu_cfs_periods_total{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\", container!=\"\"}[5m])) by (pod,container)",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{container}} [{{pod}}]",
+                  "refId": "A"
+                }
+              ],
+              "thresholds": [
+                {
+                  "$$hashKey": "object:84",
+                  "colorMode": "critical",
+                  "fill": true,
+                  "line": true,
+                  "op": "gt",
+                  "value": 0.25,
+                  "yaxis": "left"
+                }
+              ],
+              "timeRegions": [],
+              "title": "CPU Throttling",
+              "tooltip": {
+                "shared": true,
+                "sort": 2,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "$$hashKey": "object:40",
+                  "format": "percentunit",
+                  "logBase": 1,
+                  "max": "1",
+                  "min": "0",
+                  "show": true
+                },
+                {
+                  "$$hashKey": "object:41",
+                  "format": "short",
+                  "logBase": 1,
+                  "show": false
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 23
+              },
+              "id": 15,
+              "panels": [],
+              "title": "Memory Usage",
+              "type": "row"
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fill": 10,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 24
+              },
+              "hiddenSeries": false,
+              "id": 20,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 0,
+              "links": [],
+              "nullPointMode": "null as zero",
+              "options": {
+                "alertThreshold": true
+              },
+              "percentage": false,
+              "pluginVersion": "8.4.5",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [
+                {
+                  "$$hashKey": "object:277",
+                  "alias": "requests",
+                  "color": "#F2495C",
+                  "fill": 0,
+                  "linewidth": 2
+                },
+                {
+                  "$$hashKey": "object:282",
+                  "alias": "limits",
+                  "color": "#FF9830",
+                  "fill": 0,
+                  "linewidth": 2
+                }
+              ],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"}",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{container}} [{{pod}}]",
+                  "refId": "A",
+                  "step": 10
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_requests_memory_bytes{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"}) /\nsum(kube_pod_container_info{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "requests",
+                  "refId": "B"
+                },
+                {
+                  "exemplar": true,
+                  "expr": "sum(kube_pod_container_resource_limits_memory_bytes{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"}) /\nsum(kube_pod_container_info{namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\"})",
+                  "hide": false,
+                  "interval": "",
+                  "legendFormat": "limits",
+                  "refId": "C"
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Memory Usage",
+              "tooltip": {
+                "shared": true,
+                "sort": 2,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "$$hashKey": "object:276",
+                  "format": "bytes",
+                  "logBase": 1,
+                  "min": 0,
+                  "show": true
+                },
+                {
+                  "$$hashKey": "object:277",
+                  "format": "short",
+                  "logBase": 1,
+                  "show": false
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 31
+              },
+              "id": 17,
+              "panels": [],
+              "title": "Network Receive",
+              "type": "row"
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fill": 10,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 32
+              },
+              "hiddenSeries": false,
+              "id": 6,
+              "interval": "1m",
+              "legend": {
+                "avg": false,
+                "current": true,
+                "max": true,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 0,
+              "links": [],
+              "nullPointMode": "null as zero",
+              "options": {
+                "alertThreshold": false
+              },
+              "percentage": false,
+              "pluginVersion": "8.4.5",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "exemplar": true,
+                  "expr": "sum(irate(container_network_receive_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Receive Bandwidth",
+              "tooltip": {
+                "shared": true,
+                "sort": 2,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "$$hashKey": "object:987",
+                  "format": "Bps",
+                  "logBase": 1,
+                  "min": 0,
+                  "show": true
+                },
+                {
+                  "$$hashKey": "object:988",
+                  "format": "short",
+                  "logBase": 1,
+                  "show": false
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "collapsed": false,
+              "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 39
+              },
+              "id": 18,
+              "panels": [],
+              "title": "Network Transmit",
+              "type": "row"
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fill": 10,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 40
+              },
+              "hiddenSeries": false,
+              "id": 7,
+              "interval": "1m",
+              "legend": {
+                "avg": false,
+                "current": true,
+                "max": true,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 0,
+              "links": [],
+              "nullPointMode": "null as zero",
+              "options": {
+                "alertThreshold": false
+              },
+              "percentage": false,
+              "pluginVersion": "8.4.5",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\", pod=~\"$pod\"}[$__rate_interval])) by (pod)",
+                  "format": "time_series",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{pod}}",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Transmit Bandwidth",
+              "tooltip": {
+                "shared": true,
+                "sort": 2,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "$$hashKey": "object:259",
+                  "format": "Bps",
+                  "logBase": 1,
+                  "min": 0,
+                  "show": true
+                },
+                {
+                  "$$hashKey": "object:260",
+                  "format": "short",
+                  "logBase": 1,
+                  "show": false
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            }
+          ],
+          "refresh": "10s",
+          "schemaVersion": 35,
+          "style": "dark",
+          "tags": [],
+          "templating": {
+            "list": [
+              {
+                "current": {
+                  "selected": false,
+                  "text": "0919-test",
+                  "value": "0919-test"
+                },
+                "hide": 2,
+                "includeAll": false,
+                "multi": false,
+                "name": "datasource",
+                "options": [],
+                "query": "prometheus",
+                "queryValue": "",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "type": "datasource"
+              },
+              {
+                "current": {
+                  "selected": false,
+                  "text": "argo-rollouts",
+                  "value": "argo-rollouts"
+                },
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "definition": "label_values(kube_namespace_created{job=\"kube-state-metrics\"}, namespace)",
+                "error": {
+                  "config": {
+                    "data": {
+                      "end": "1663831710",
+                      "match[]": "kube_namespace_created{job=\"kube-state-metrics\"}",
+                      "start": "1663745310"
+                    },
+                    "headers": {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                      "X-Grafana-Org-Id": 1
+                    },
+                    "hideFromInspector": true,
+                    "method": "POST",
+                    "retry": 0,
+                    "url": "api/datasources/proxy/15/api/v1/series"
+                  },
+                  "data": {
+                    "error": "Bad Gateway",
+                    "message": "Bad Gateway",
+                    "response": ""
+                  },
+                  "message": "Bad Gateway",
+                  "status": 502,
+                  "statusText": "Bad Gateway"
+                },
+                "hide": 2,
+                "includeAll": false,
+                "multi": false,
+                "name": "namespace",
+                "options": [],
+                "query": {
+                  "query": "label_values(kube_namespace_created{job=\"kube-state-metrics\"}, namespace)",
+                  "refId": "StandardVariableQuery"
+                },
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 1,
+                "tagValuesQuery": "",
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+              },
+              {
+                "current": {
+                  "selected": false,
+                  "text": "All",
+                  "value": "$__all"
+                },
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "definition": "label_values(kube_pod_info{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\"$cluster.*\"}, pod)",
+                "error": {
+                  "config": {
+                    "data": {
+                      "end": "1663831710",
+                      "match[]": "kube_pod_info{job=\"kube-state-metrics\", namespace=\"argo-rollouts\", pod=~\".*\"}",
+                      "start": "1663745310"
+                    },
+                    "headers": {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                      "X-Grafana-Org-Id": 1
+                    },
+                    "hideFromInspector": true,
+                    "method": "POST",
+                    "retry": 0,
+                    "url": "api/datasources/proxy/15/api/v1/series"
+                  },
+                  "data": {
+                    "error": "Bad Gateway",
+                    "message": "Bad Gateway",
+                    "response": ""
+                  },
+                  "message": "Bad Gateway",
+                  "status": 502,
+                  "statusText": "Bad Gateway"
+                },
+                "hide": 0,
+                "includeAll": true,
+                "multi": true,
+                "name": "pod",
+                "options": [],
+                "query": {
+                  "query": "label_values(kube_pod_info{job=\"kube-state-metrics\", namespace=\"$namespace\", pod=~\"$cluster.*\"}, pod)",
+                  "refId": "StandardVariableQuery"
+                },
+                "refresh": 2,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 1,
+                "tagValuesQuery": "",
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+              },
+              {
+                "current": {
+                  "selected": false,
+                  "text": "",
+                  "value": ""
+                },
+                "hide": 2,
+                "name": "cluster",
+                "options": [
+                  {
+                    "selected": true,
+                    "text": "",
+                    "value": ""
+                  }
+                ],
+                "query": "",
+                "skipUrlSync": false,
+                "type": "textbox"
+              },
+              {
+                "current": {
+                  "selected": true,
+                  "text": [],
+                  "value": []
+                },
+                "datasource": {
+                  "uid": "${datasource}"
+                },
+                "definition": "label_values(kube_pod_container_info{namespace=\"$namespace\", pod=~\"$cluster.*\"}, container)",
+                "error": {
+                  "config": {
+                    "data": {
+                      "end": "1663831710",
+                      "match[]": "kube_pod_container_info{namespace=\"argo-rollouts\", pod=~\".*\"}",
+                      "start": "1663745310"
+                    },
+                    "headers": {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                      "X-Grafana-Org-Id": 1
+                    },
+                    "hideFromInspector": true,
+                    "method": "POST",
+                    "retry": 0,
+                    "url": "api/datasources/proxy/15/api/v1/series"
+                  },
+                  "data": {
+                    "error": "Bad Gateway",
+                    "message": "Bad Gateway",
+                    "response": ""
+                  },
+                  "message": "Bad Gateway",
+                  "status": 502,
+                  "statusText": "Bad Gateway"
+                },
+                "hide": 0,
+                "includeAll": false,
+                "multi": true,
+                "name": "container",
+                "options": [],
+                "query": {
+                  "query": "label_values(kube_pod_container_info{namespace=\"$namespace\", pod=~\"$cluster.*\"}, container)",
+                  "refId": "StandardVariableQuery"
+                },
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 0,
+                "tagValuesQuery": "",
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+              }
+            ]
+          },
+          "time": {
+            "from": "now-24h",
+            "to": "now"
+          },
+          "timepicker": {
+            "refresh_intervals": [
+              "5s",
+              "10s",
+              "30s",
+              "1m",
+              "5m",
+              "15m",
+              "30m",
+              "1h",
+              "2h",
+              "1d"
+            ],
+            "time_options": [
+              "5m",
+              "15m",
+              "1h",
+              "6h",
+              "12h",
+              "24h",
+              "2d",
+              "7d",
+              "30d"
+            ]
+          },
+          "timezone": "",
+          "title": "Container",
+          "uid": "horizon-container",
+          "version": 1,
+          "weekStart": ""
+        }
+
+
+job:
+  additionalLabels: {}
+  image:
+    repository: horizoncd/horizon-job
+    tag: v2.0.9
+  args:
+    loglevel:
+    gitOpsRepoDefaultBranch: master
+  securityContext:
+    runAsUser: 10001
+    fsGroup: 10001
+  serviceAccount:
+    create: true
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraVolumeMounts: []
+  extraVolumes: []
+
+swagger:
+  replicas: 1
+  image:
+    repository: horizoncd/horizon-swagger
+    tag: v2.0.9
+  securityContext:
+    runAsUser: 10001
+    fsGroup: 10001
+  envs:
+    BASE_URL: /apis/swagger
+    SWAGGER_JSON: /openapi/restful-v2.0.0.json
+  service:
+    port: 80
+    targetPort: 8080
+  resources: {}
+  extraVolumeMounts: []
+  extraVolumes: []
+
+web:
+  replicas: 1
+  image:
+    repository: horizoncd/horizon-web
+    tag: v2.0.7
+  securityContext:
+    runAsUser: 10001
+    fsGroup: 10001
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  port: 8080
+  service:
+    port: 80
+  extraVolumeMounts: []
+  extraVolumes: []
+
+imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+roles:
+  RolePriorityRankDesc: [pe,owner,maintainer,tagger,guest]
+  DefaultRole: guest
+  Roles:
+    - name: owner
+      desc: owner为组/应用/集群的拥有者,拥有最高权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - applications
+            - groups/applications
+            - applications/members
+            - applications/envtemplates
+            - applications/defaultregions
+            - applications/transfer
+            - applications/selectableregions
+            - applications/subresourcetags
+            - applications/pipelinestats
+            - applications/webhooks
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups
+            - groups/members
+            - groups/groups
+            - groups/transfer
+            - groups/webhooks
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/oauthapps
+            - oauthapps
+            - oauthapps/clientsecret
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - applications/clusters
+            - clusters
+            - clusters/builddeploy
+            - clusters/deploy
+            - clusters/diffs
+            - clusters/next
+            - clusters/restart
+            - clusters/rollback
+            - clusters/status
+            - clusters/buildstatus
+            - clusters/step
+            - clusters/resourcetree
+            - clusters/members
+            - clusters/pipelineruns
+            - clusters/terminal
+            - clusters/containerlog
+            - clusters/exec
+            - clusters/online
+            - clusters/offline
+            - clusters/tags
+            - pipelineruns
+            - pipelineruns/stop
+            - pipelineruns/log
+            - pipelineruns/diffs
+            - clusters/dashboards
+            - clusters/pods
+            - clusters/pod
+            - clusters/free
+            - clusters/events
+            - clusters/outputs
+            - clusters/promote
+            - clusters/shell
+            - clusters/pause
+            - clusters/resume
+            - clusters/containers
+            - clusters/webhooks
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - clusters/templateschematags
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/templates
+            - templates/releases
+            - templates
+            - templates/members
+            - templatereleases/members
+            - templatereleases
+            - templatereleases/sync
+            - templatereleases/schema
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/accesstokens
+            - applications/accesstokens
+            - clusters/accesstokens
+            - personalaccesstokens
+            - accesstokens
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - webhooks
+            - webhooks/logs
+            - webhooklogs
+            - webhooklogs/resend
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: maintainer
+      desc: maintainer为组/应用/集群的管理者，拥有除删除资源之外的其他权限，并且也可以进行成员管理
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - applications
+            - groups/applications
+            - applications/members
+            - applications/envtemplates
+            - applications/defaultregions
+            - applications/transfer
+            - applications/selectableregions
+            - applications/subresourcetags
+            - applications/pipelinestats
+          verbs:
+            - create
+            - get
+            - update
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups
+            - groups/members
+            - groups/groups
+            - groups/transfer
+          verbs:
+            - get
+            - create
+            - update
+          scopes:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - applications/clusters
+            - clusters
+            - clusters/builddeploy
+            - clusters/deploy
+            - clusters/diffs
+            - clusters/next
+            - clusters/restart
+            - clusters/rollback
+            - clusters/status
+            - clusters/buildstatus
+            - clusters/step
+            - clusters/resourcetree
+            - clusters/members
+            - clusters/pipelineruns
+            - clusters/terminal
+            - clusters/containerlog
+            - clusters/exec
+            - clusters/online
+            - clusters/offline
+            - clusters/tags
+            - pipelineruns
+            - pipelineruns/stop
+            - pipelineruns/log
+            - pipelineruns/diffs
+            - clusters/dashboards
+            - clusters/pods
+            - clusters/pod
+            - clusters/free
+            - clusters/events
+            - clusters/outputs
+            - clusters/promote
+            - clusters/shell
+            - clusters/pause
+            - clusters/resume
+            - clusters/containers
+          verbs:
+            - create
+            - get
+            - update
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - clusters/templateschematags
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - clusters/pods
+          verbs:
+            - delete
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/oauthapps
+            - oauthapps
+            - oauthapps/clientsecret
+            - templates/releases
+            - templatereleases/schema
+            - groups/templates
+            - templatereleases
+            - templates
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - templates/members
+            - templatereleases/members
+          verbs:
+            - get
+            - update
+            - create
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - templatereleases
+            - templates
+          verbs:
+            - get
+            - create
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/accesstokens
+            - applications/accesstokens
+            - clusters/accesstokens
+            - personalaccesstokens
+            - accesstokens
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: tagger
+      desc: tagger为集群的标签管理人员，目前仅提供给pylon2进行批量调整jvm使用。
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - clusters/tags
+          verbs:
+            - create
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: pe
+      desc: pe为应用/集群的管理者，拥有除删除资源之外的其他权限，并且也可以进行成员管理。破格修改资源上限等
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - applications
+            - groups/applications
+            - applications/members
+            - applications/envtemplates
+            - applications/defaultregions
+            - applications/transfer
+            - applications/selectableregions
+            - applications/subresourcetags
+            - applications/pipelinestats
+            - applications/accesstokens
+          verbs:
+            - create
+            - get
+            - update
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups
+            - groups/members
+            - groups/groups
+            - groups/transfer
+            - groups/regionselectors
+            - groups/accesstokens
+          verbs:
+            - get
+            - create
+            - update
+          scopes:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - templates/releases
+            - groups/templates
+            - templatereleases/schema
+            - templates
+            - templatereleases
+          verbs:
+            - get
+          scopes:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - applications/clusters
+            - clusters/builddeploy
+            - clusters/deploy
+            - clusters/diffs
+            - clusters/next
+            - clusters/restart
+            - clusters/rollback
+            - clusters/status
+            - clusters/buildstatus
+            - clusters/step
+            - clusters/resourcetree
+            - clusters/members
+            - clusters/pipelineruns
+            - clusters/terminal
+            - clusters/containerlog
+            - clusters/exec
+            - clusters/online
+            - clusters/offline
+            - clusters/tags
+            - pipelineruns
+            - pipelineruns/stop
+            - pipelineruns/log
+            - pipelineruns/diffs
+            - clusters/dashboards
+            - clusters/pods
+            - clusters/pod
+            - clusters/free
+            - clusters/templateschematags
+            - clusters/events
+            - clusters/outputs
+            - clusters/promote
+            - clusters/shell
+            - clusters/pause
+            - clusters/resume
+            - clusters/containers
+            - clusters/accesstokens
+            - templates/members
+            - templatereleases/members
+          verbs:
+            - create
+            - get
+            - update
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - clusters
+            - clusters/pods
+            - groups/accesstokens
+            - applications/accesstokens
+            - clusters/accesstokens
+          scopes:
+            - '*'
+          verbs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/oauthapps
+            - oauthapps
+            - oauthapps/clientsecret
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/accesstokens
+            - applications/accesstokens
+            - clusters/accesstokens
+            - personalccesstokens
+            - accesstokens
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: guest
+      desc: guest为只读人员，拥有组/应用/项目的只读权限，以及测试环境集群创建的权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - groups
+            - groups/members
+            - groups/groups
+            - groups/templates
+            - templates
+            - templatereleases
+            - templatereleases/schema
+            - templates/releases
+            - templates/members
+            - templatereleases/members
+            - applications
+            - groups/applications
+            - applications/clusters
+            - applications/members
+            - applications/envtemplates
+            - applications/defaultregions
+            - applications/selectableregions
+            - applications/pipelinestats
+            - applications/subresourcetags
+            - clusters
+            - clusters/diffs
+            - clusters/status
+            - clusters/buildstatus
+            - clusters/step
+            - clusters/resourcetree
+            - clusters/members
+            - clusters/pipelineruns
+            - clusters/containerlog
+            - clusters/tags
+            - pipelineruns
+            - pipelineruns/log
+            - pipelineruns/diffs
+            - clusters/dashboards
+            - clusters/pods
+            - clusters/pod
+            - clusters/events
+            - clusters/outputs
+            - clusters/templateschematags
+            - clusters/containers
+            - groups/accesstokens
+            - applications/accesstokens
+            - clusters/accesstokens
+            - personalaccesstokens
+          verbs:
+            - get
+          scopes:
+            - "*"
+        - apiGroups:
+            - core
+          resources:
+            - applications/clusters
+          verbs:
+            - create
+            - get
+            - update
+          scopes:
+            - "test/*"
+            - "reg/*"
+            - "perf/*"
+            - "pre/*"
+        - apiGroups:
+            - core
+          resources:
+            - groups/oauthapps
+            - oauthapps
+            - oauthapps/clientsecret
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+            -
+
+
+
+scopes:
+  defaultScope:
+    - applications:read-write
+    - clusters:read-write
+  roles:
+    - name: groups:read-only
+      desc: 分组(group)及其相关子资源的只读权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - groups
+            - groups/groups
+            - groups/members
+            - groups/templates
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: groups:read-write
+      desc: 分组(group)及其相关子资源的读写删权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - groups
+            - groups/groups
+            - groups/members
+            - groups/templates
+            - groups/transfer
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: applications:read-only
+      desc: 应用(application)及相关子资源的只读权限等
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - groups/applications
+            - applications
+            - applications/members
+            - applications/envtemplates
+            - applications/defaultregions
+            - applications/subresourcetags
+            - applications/selectableregions
+            - applications/envtemplates
+            - environments
+            - environments/regions
+            - templates
+            - templates/releases
+            - templatereleases/schema
+            - templatereleases
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: applications:read-write
+      desc: 应用(application)及其相关子资源的读写删权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - groups/applications
+            - applications
+            - applications/members
+            - applications/envtemplates
+            - applications/defaultregions
+            - applications/subresourcetags
+            - applications/transfer
+            - applications/selectableregions
+            - applications/envtemplates
+            - environments
+            - environments/regions
+            - templates
+            - templates/releases
+            - templatereleases/schema
+            - templatereleases
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: clusters:read-only
+      desc: 集群(cluster)及其相关子资源的相关的只读权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - applications/clusters
+            - clusters
+            - clusters/diffs
+            - clusters/status
+            - clusters/members
+            - clusters/pipelineruns
+            - clusters/containerlog
+            - clusters/tags
+            - clusters/pod
+            - pipelineruns
+            - pipelineruns/log
+            - pipelineruns/diffs
+            - clusters/events
+            - clusters/outputs
+            - clusters/containers
+            - clusters/dashboards
+            - clusters/buildstatus
+            - clusters/step
+            - clusters/resourcetree
+          verbs:
+            - get
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+    - name: clusters:read-write
+      desc: 集群(cluster)及其相关子资源的读写删权限
+      rules:
+        - apiGroups:
+            - core
+          resources:
+            - applications/clusters
+            - clusters
+            - clusters/builddeploy
+            - clusters/deploy
+            - clusters/diffs
+            - clusters/next
+            - clusters/restart
+            - clusters/rollback
+            - clusters/status
+            - clusters/members
+            - clusters/pipelineruns
+            - clusters/terminal
+            - clusters/containerlog
+            - clusters/online
+            - clusters/offline
+            - clusters/tags
+            - pipelineruns
+            - pipelineruns/stop
+            - pipelineruns/log
+            - pipelineruns/diffs
+            - clusters/dashboards
+            - clusters/pods
+            - clusters/pod
+            - clusters/free
+            - clusters/events
+            - clusters/outputs
+            - clusters/promote
+            - clusters/shell
+            - clusters/pause
+            - clusters/resume
+            - clusters/containers
+            - clusters/exec
+            - clusters/buildstatus
+            - clusters/step
+            - clusters/resourcetree
+          verbs:
+            - "*"
+          scopes:
+            - "*"
+          nonResourceURLs:
+            - "*"
+
+authhtml: |
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+          .card:hover {
+              box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+          }
+          img {
+              border-radius: 5px 5px 0 0;
+          }
+          .card {
+              margin: auto;
+              padding:  2px 16px;
+              box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+              transition: 0.3s;
+              width: 420px;
+              border-radius: 3px;
+              background: white;
+              margin-top: 32px;
+          }
+          .text-center {
+              text-align: center !important;
+          }
+          .text-normal {
+              font-weight: 400 !important;
+          }
+          .text-smaller {
+              font-size: smaller;
+          }
+          .d-flex {
+              display: flex !important;
+          }
+          .flex-justify-center {
+              justify-content: center !important;
+          }
+          .buttom {
+              border-radius: 3px;
+              background-color: #1f75cb; /* Green */
+              border: none;
+              color: white;
+              padding: 15px 32px;
+              text-align: center;
+              display: inline-block;
+              font-size: 16px;
+              width: 200px;
+              cursor:pointer;
+          }
+          .buttom-cancel {
+              border-radius: 3px;
+              border: none;
+              color: #000000;
+              background: #f6f8fa;
+              width: 200px;
+              font-size: 16px;
+              text-align: center;
+              cursor:pointer;
+          }
+          .center {
+              padding-top: 0px;
+              margin: auto;
+              width: 14%;
+          }
+      </style>
+  </head>
+  <body style="background-color: #f6f8fa">
+  <div>
+        <div class="card">
+            <h2  class="text-center text-normal"><a href="{{ .HomeURL }}">{{ .ClientName }}</a> would like permission:</h2>
+            <h2  class="text-center text-normal">Horizon</h2>
+            <div class="center">
+                <svg height="60" width="60" >
+                      <path stroke="#000" id="svg_4" d="m3.99874,3.99913l42.99352,0l0,45.994l-42.99352,0l0,-45.994z" opacity="undefined" stroke-width="0" fill="#000000"/>
+                      <text stroke="#000" xml:space="preserve" text-anchor="start" font-family="Sans-serif" font-size="32" id="svg_6" y="37.03232" x="13.54039" stroke-width="0" fill="#ffffff">H</text>
+                    </g>
+                </svg>
+            </div>
+            <div style="padding-left:45px;" >
+                <svg height="32" aria-hidden="true" viewBox="0 0 24 24" version="1.1" width="32" data-view-component="true">
+                    <path fill-rule="evenodd" d="M12 2.5a5.5 5.5 0 00-3.096 10.047 9.005 9.005 0 00-5.9 8.18.75.75 0 001.5.045 7.5 7.5 0 0114.993 0 .75.75 0 101.499-.044 9.005 9.005 0 00-5.9-8.181A5.5 5.5 0 0012 2.5zM8 8a4 4 0 118 0 4 4 0 01-8 0z"></path>
+                </svg>
+                <strong>Verify your Horizon identity ({{ .UserName }})</strong>
+            </div>
+            <div style="padding-left:45px; padding-top: 20px">
+                <svg height="32" aria-hidden="true" viewBox="0 0 24 24" version="1.1" width="32" data-view-component="true">
+                    <path fill-rule="evenodd" d="M9.002 2.5a.75.75 0 01.691.464l6.302 15.305 2.56-6.301a.75.75 0 01.695-.468h4a.75.75 0 010 1.5h-3.495l-3.06 7.532a.75.75 0 01-1.389.004L8.997 5.21l-3.054 7.329A.75.75 0 015.25 13H.75a.75.75 0 010-1.5h4l3.558-8.538a.75.75 0 01.694-.462z"></path>
+                </svg>
+                <strong>Act on your behalf</strong>
+            </div>
+            <div style="margin-top: 20px; padding-left: 45px">
+                {{range .ScopeBasic}} <div style="margin-top: 3px"><strong>{{ .Name}}:</strong> {{ .Desc }} </div>{{end}}
+            </div>
+            <div style="margin-top: 20px;">
+                <div>
+                    <form action="/login/oauth/authorize" method="POST">
+                        <input type="hidden" name="client_id" id="client_id" value="{{.ClientID }}" autocomplete="off">
+                        <input type="hidden" name="redirect_uri" id="redirect_uri" value="{{ .RedirectURL }}" autocomplete="off">
+                        <input type="hidden" name="state" id="state" value="{{ .State }}" autocomplete="off">
+                        <input type="hidden" name="scope" id="scope" value="{{ .Scope }}" autocomplete="off">
+                        <div class="d-flex flex-justify-center">
+                            <button type="submit" name="authorize" value="0" class="buttom-cancel">取消</button>
+                            <button type="submit" name="authorize" value="1" class="buttom">
+                                授权
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <p class="text-center text-smaller">Authorizing will redirect to <br><strong class="color-fg-default">{{ .RedirectURL }} </strong></p>
+                </div>
+            </div>
+       </div>
+  </div>
+  </body>
+  </html>
+
+build_schema:
+  build_json_schema: |
+    {
+      "type": "object",
+      "required": [
+        "buildType"
+      ],
+      "properties": {
+        "buildType": {
+          "type": "string",
+          "title": "Build type",
+          "oneOf": [
+            {
+              "enum": [
+                "dockerfile"
+              ],
+              "title": "Dockerfile build"
+            }
+          ],
+          "default": "dockerfile"
+        }
+      },
+      "dependencies": {
+        "buildType": {
+          "oneOf": [
+            {
+              "properties": {
+                "buildType": {
+                  "enum": [
+                    "dockerfile"
+                  ]
+                },
+                "dockerfile": {
+                  "type": "object",
+                  "title": "Dockerfile Build",
+                  "oneOf": [
+                    {
+                      "title": "Dockerfile path",
+                      "properties": {
+                        "path": {
+                          "type": "string",
+                          "description": "Dockerfile path from your project root"
+                        }
+                      },
+                      "required": [
+                        "path"
+                      ]
+                    },
+                    {
+                      "title": "Dockerfile content",
+                      "properties": {
+                        "content": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "content"
+                      ]
+                    }
+                  ]
+                },
+                "buildArgs": {
+                  "type": "array",
+                  "title": "Build arguments",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "dockerfile"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  build_ui_schema: |
+    {
+      "ui:order": [
+        "buildType",
+        "dockerfile",
+        "buildArgs"
+      ],
+      "dockerfile": {
+        "content": {
+          "ui:widget": "textarea",
+          "ui:options": {
+            "rows": 18
+          }
+        }
+      },
+      "buildType": {
+        "ui:widget": "radio",
+        "ui:options": {
+          "inline": true
+        }
+      }
+    }
+
+redis-ha:
+  replicas: 1
+  haproxy:
+    enabled: false
+  globalNamePrefix: horizon
+
+minio:
+  enabled: false
+  ingress:
+    enabled: true
+    hostname: minio.h8r.site
+  persistence:
+    enabled: true
+  defaultBuckets: horizon
+  auth:
+    rootUser: admin
+    rootPassword: qOIh3Xt5jg
+  provisioning:
+    enabled: true
+    config:
+      - name: region
+        options:
+          name: china
+
+mysql:
+  enabled: true
+  auth:
+    rootPassword: "horizon"
+    createDatabase: true
+    database: "horizon"
+  initdbScriptsConfigMap: horizon-dbinit
+  primary:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 500Mi
+      limits:
+        cpu: "1"
+        memory: 2Gi
+    persistence:
+      size: 20Gi
+
+gitlab:
+  enabled: true
+  image: gitlab/gitlab-ce
+  imageTag: "13.11.7-ce.0"
+  ingress:
+    enabled: true
+    hosts:
+      - gitlab.h8r.site
+  persistence:
+    enabled: true
+    size: 20Gi
+  config:
+    GITLAB_ROOT_PASSWORD: root1234
+    GITLAB_ROOT_ACCESS_TOKEN: horizon-access-token
+    GITLAB_HOST: gitlab.h8r.site
+    GITLAB_TIMEZONE: "Asia/Shanghai"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: "1"
+      memory: 4Gi
+
+chartmuseum:
+  enabled: true
+  ingress:
+    enabled: true
+    hosts:
+      - name: chartmuseum.h8r.site
+  env:
+    open:
+      # storage backend, can be one of: local, alibaba, amazon, google, microsoft, oracle
+      STORAGE: amazon
+      # s3 bucket to store charts for amazon storage backend
+      STORAGE_AMAZON_BUCKET: horizon
+      # region of s3 bucket to store charts
+      STORAGE_AMAZON_REGION: china
+      # alternative s3 endpoint
+      STORAGE_AMAZON_ENDPOINT: "http://horizon-minio:9000"
+      DISABLE_API: false
+    secret:
+      AWS_ACCESS_KEY_ID: admin
+      AWS_SECRET_ACCESS_KEY: qOIh3Xt5jg
+
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: true
+  adminPassword: admin
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.h8r.site
+    path: /
+  sidecar:
+    dashboards:
+      enabled: true
+    datasources:
+      enabled: true
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+    security:
+      allow_embedding: true
+
+argo-cd:
+  enabled: true
+  redis:
+    enabled: false
+  externalRedis:
+    host: horizon-redis-ha
+    port: 6379
+  server:
+    extraArgs:
+      - --insecure
+    ingress:
+      enabled: true
+      hosts:
+        - argocd.h8r.site
+    config:
+      accounts.robot: login,apiKey
+    rbacConfig:
+      policy.csv: |
+        g, robot, role:admin
+      policy.default: role:readonly
+  configs:
+    secret:
+      argocdServerAdminPassword: $2a$10$QYhbg9cY1Zb.r/crsMHvAODjgtTyHT1XQPGE4cAFEXMNyAXOPuOF.%
+      extra:
+        server.secretkey: "123456"
+        accounts.robot.password: $2a$10$QYhbg9cY1Zb.r/crsMHvAODjgtTyHT1XQPGE4cAFEXMNyAXOPuOF.%
+        accounts.robot.tokens: '[{"id":"bd05a278-2c86-4047-9bd8-ef64209dffa5","iat":1673236464}]'
+    repositories:
+      helm-repo:
+        url: http://horizon-chartmuseum:8080
+        name: horizon-template-repo
+        insecure: "true"
+        type: helm
+    credentialTemplates:
+      gitops-creds:
+        url: http://horizon-gitlab
+        password: root1234
+        username: root
+        name: gitops-creds
+  applicationSet:
+    enabled: false
+  notifications:
+    enabled: false
+  dex:
+    enabled: false
+
+tektoncd:
+  enabled: true
+  configDefaults:
+    default-cloud-events-sink: http://horizon-core-cloudevent.horizoncd/apis/internal/cloudevents
+  tektonDashboard:
+    ingress:
+      host: tekton.h8r.site
+
+harbor:
+  enabled: true
+  expose:
+    type: clusterIP
+    tls:
+      auto:
+        commonName: "harbor.horizoncd.svc.cluster.local"
+    clusterIP:
+      name: harbor
+  externalURL: https://harbor.horizoncd.svc.cluster.local
+  persistence:
+    persistentVolumeClaim:
+      database:
+        size: 20Gi
+      jobservice:
+        size: 20Gi
+  redis:
+    type: external
+    external:
+      addr: "horizon-redis-ha:6379"
+  chartmuseum:
+    enabled: false
+  core:
+    replicas: 1
+  jobservice:
+    replicas: 1
+  registry:
+    replicas: 1
+  notary:
+    enabled: false
+  trivy:
+    enabled: false
+
+tektonci-resources:
+  auth:
+    dockerConfigJson: {    "auths":    {        "harbor.horizoncd.svc.cluster.local":        {            "username": "admin",            "password": "Harbor12345",            "auth": "YWRtaW46SGFyYm9yMTIzNDU="        }    }}
+  gitRepos:
+    ssh: []
+    http: []
+  extraVolumeMounts: []
+
